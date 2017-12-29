@@ -1,14 +1,11 @@
 
 runtime: nodejs
+env: flex
 
 handlers:
   - url: /static
     static_dir: static
+  - url: /
+    script: home.app
 
-dispatch:
-  - url: '/api'
-    module: api
-
-  - url: '/'
-    module: front_end
   

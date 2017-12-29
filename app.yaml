@@ -3,9 +3,10 @@ runtime: nodejs
 env: flex
 
 handlers:
-  - url: /static
+  - url: /*
     static_dir: static
-  - url: /
-    script: home.app
+
+#  - url: /home
+#    script: home.app
 
   

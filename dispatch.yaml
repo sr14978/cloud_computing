@@ -1,3 +1,3 @@
 dispatch:
-  - url: '*/api'
-    module: api
+  - url: '*/api/*'
+    service: api

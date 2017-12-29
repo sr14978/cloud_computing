@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
 });
 
 app.get((req, res) => {
-  res.send('hi');
+  res.send('not available: home');
 });
 
 app.listen(process.env.PORT)

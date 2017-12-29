@@ -6,7 +6,11 @@ const express = require('express');
 const app = express();
 
 app.get('/', (req, res) => {
-  res.redirect('/static/index.html')
+  res.send('hi');
+});
+
+app.get((req, res) => {
+  res.send('hi');
 });
 
 app.listen(process.env.PORT)

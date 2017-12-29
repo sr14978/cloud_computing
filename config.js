@@ -20,5 +20,7 @@ const path = require('path');
 
 nconf.defaults({
     GCLOUD_PROJECT: 'cloudcomputingcompliler',
-    PORT: 8080
+    PORT: 8080,
+    SUBSCRIPTION_NAME: 'worker-subscription',
+    TOPIC_NAME: ''
   });

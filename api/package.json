@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "start": "node api.js"
-  },
-  "dependencies": {
-    "express": "4.16.2"
-  }
-}

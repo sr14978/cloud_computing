@@ -2,11 +2,4 @@
 runtime: nodejs
 env: flex
 
-handlers:
-  - url: /*
-    static_dir: static
-
-#  - url: /home
-#    script: home.app
-
   

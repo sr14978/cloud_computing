@@ -5,8 +5,8 @@ const express = require('express');
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.status(200).send('Hello, world!');
+app.get('/api/upload', (req, res) => {
+  res.send('wow there, you trying to upload something. I haven\'t implemented that yet');
 });
 
 app.listen(process.env.PORT)

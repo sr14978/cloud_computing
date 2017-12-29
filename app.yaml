@@ -1,5 +1,14 @@
 
-# [START runtime]
 runtime: nodejs
-env: flex
-# [END runtime]
+
+handlers:
+  - url: /static
+    static_dir: static
+
+dispatch:
+  - url: '/api'
+    module: api
+
+  - url: '/'
+    module: front_end
+  

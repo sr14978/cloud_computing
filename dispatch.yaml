@@ -1,4 +1,6 @@
 dispatch:
+  - url: "*/api"
+    service: api
   - url: "*/api/*"
     service: api
   - url: "*/*"

@@ -1,6 +1,5 @@
 from flask import Flask, Blueprint, request
 import queue
-publish = queue.get_publisher('breakup')
 api = Blueprint('api_blueprint', __name__)
 
 messages = []
@@ -12,6 +11,7 @@ def home():
 def submit():
     f = request.files['source.zip']
     messages.append(str(f))
+    publish = queue.get_publisher('breakup')
     publish(data='{"messages": [{"attributes": {"type": "breakup"}, "data": "<path_to_zip_on_blob>" } ]}')
     return "OK", 200
 

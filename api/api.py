@@ -1,7 +1,7 @@
 from flask import Flask, Blueprint, request
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '..'))
+sys.path.append(os.path.abspath(os.path.dirname(os.path.abspath(__file__)) + '/' + '..'))
 from pubsub import pubsub
 api = Blueprint('api_blueprint', __name__)
 

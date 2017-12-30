@@ -12,7 +12,7 @@ def submit():
     f = request.files['source.zip']
     messages.append(str(f))
     #pubsub.add_breakup_job(data='{"messages": [{"attributes": {"type": "breakup"}, "data": "<path_to_zip_on_blob>" } ]}')
-    return 200
+    return "OK", 200
 
 app = Flask(__name__)
 app.register_blueprint(api, url_prefix='/api/v1')

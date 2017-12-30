@@ -9,7 +9,7 @@ def home():
 @api.route("/submit", methods=['PUT'])
 def submit():
     f = request.files['source.zip']
-    pubsub.add_breakup_job('{"type": "breakup", "path": "<path_on_blob>"}')
+    pubsub.add_breakup_job(data='{"type": "breakup", "path": "<path_on_blob>"}')
     return 200
 
 app = Flask(__name__)

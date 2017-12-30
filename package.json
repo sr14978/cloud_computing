@@ -1,8 +1,0 @@
-{
-  "scripts": {
-    "start": "node home.js"
-  },
-  "dependencies": {
-    "express": "4.16.2"
-  }
-}

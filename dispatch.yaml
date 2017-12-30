@@ -1,3 +1,7 @@
 dispatch:
-  - url: '*/api/*'
+  - url: "*/_ah/breakup"
+    service: breakup
+  - url: "*/api/*"
     service: api
+  - url: "*/*"
+    service: default

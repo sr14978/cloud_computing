@@ -12,9 +12,9 @@ def home():
 def submit():
     f = request.files['source.zip']
     messages.append(str(f))
-    url = storage.upload_file(f)
+    url,name = storage.upload_file(f)
     publish = queue.get_publisher('breakup')
-    publish(data='{"messages": [{"attributes": {"type": "breakup"}, "data": "' + url + '" } ]}');
+    publish(data='{"messages": [{"attributes": {"type": "breakup"}, "data": "' + name + '" } ]}');
     return "OK", 200
 
 app = Flask(__name__)

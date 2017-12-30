@@ -10,8 +10,12 @@ def upload_file(file):
   blob = bucket.blob(safe_filename)
   blob.upload_from_file(file)
   url = blob.public_url
-  return url
+  return url, safe_filename
 
+def download_file(filename):
+  blob = bucket.blob(filename)
+  return blob.download_as_string()
+  
 def _safe_filename(filename):
   filename = secure_filename(filename)
   date = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H%M%S")

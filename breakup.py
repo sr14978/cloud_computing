@@ -1,12 +1,14 @@
 from flask import Flask, Blueprint, request
 import json
+import base64
 breakup = Blueprint('breakup_blueprint', __name__)
     
 messages = []
 @breakup.route("/", methods=['POST'])
 def job():
-    data = json.loads(request.data.decode('utf-8'))
-    messages.append(data)
+    envelope = json.loads(request.data.decode('utf-8'))
+    payload = base64.b64decode(envelope['message']['data'])
+    messages.append(payload)
     return 'Ok', 200
 
 @breakup.route("/get")

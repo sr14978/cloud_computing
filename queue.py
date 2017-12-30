@@ -7,7 +7,7 @@ from functools import partial
 publisher_client = pubsub.PublisherClient()
 subscriber_client = pubsub.SubscriberClient()
 
-def start(name):
+def get_publisher(name):
   topic_name = publisher_client.topic_path('cloudcomputingcompliler', name + '_jobs')
   try:
     publisher_client.create_topic(topic_name)
@@ -24,5 +24,4 @@ def start(name):
   
   return partial(publisher_client.publish, topic=topic_name)
   
-add_breakup_job = start('breakup')
 

@@ -1,6 +1,7 @@
 import java.io.File
 
 import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 
 class Files(path: String, session: String)
 {
@@ -20,4 +21,5 @@ class Files(path: String, session: String)
         case unzipped => files
     }
     val fileList: List[String] = unpack(zip)
+    def files(): java.util.List[String] = fileList.asJava
 }

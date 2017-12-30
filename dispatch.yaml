@@ -1,6 +1,4 @@
 dispatch:
-  - url: "*/unzip"
-    service: unzip
   - url: "*/_ah/breakup"
     service: breakup
   - url: "*/api/*"

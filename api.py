@@ -11,7 +11,6 @@ def home():
     
 @api.route("/submit", methods=['PUT'])
 def submit():
-    print(request.form)
     f = request.files['source.zip']
     flags = request.form['flags']
     recv_messages.append(str(f))

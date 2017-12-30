@@ -1,7 +1,7 @@
 
 from google.cloud import pubsub
 from google.api_core.exceptions import AlreadyExists
-from google.cloud.pubsub.types import PushConfig
+from google.cloud.pubsub_v1.types import PushConfig
 from functools import partial
 
 def start(name):

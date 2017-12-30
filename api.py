@@ -1,15 +1,17 @@
 from flask import Flask, Blueprint, request
-from pubsub import pubsub
+#from pubsub import pubsub
 api = Blueprint('api_blueprint', __name__)
 
+messages = []
 @api.route("/")
 def home():
-    return "api home"
+    return str(messages)
     
 @api.route("/submit", methods=['PUT'])
 def submit():
     f = request.files['source.zip']
-    pubsub.add_breakup_job(data='{"messages": [{"attributes": {"type": "breakup"}, "data": "<path_to_zip_on_blob>" } ]}')
+    messages.append(str(f))
+    #pubsub.add_breakup_job(data='{"messages": [{"attributes": {"type": "breakup"}, "data": "<path_to_zip_on_blob>" } ]}')
     return 200
 
 app = Flask(__name__)

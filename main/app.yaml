@@ -1,0 +1,10 @@
+env: flex
+runtime: python
+threadsafe: true
+
+entrypoint: gunicorn -b :$PORT main:app
+handlers:
+- url: /static
+  static_dir: static
+- url: /.*
+  script: home.app

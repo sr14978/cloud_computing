@@ -10,7 +10,7 @@ def job():
     return 200
 
 @breakup.route("/get")
-def job():
+def get():
     return messages.append(data).encode('utf-8')
     
 app = Flask(__name__)

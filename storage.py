@@ -6,16 +6,20 @@ client = storage.Client(project='cloudcomputingcompliler')
 bucket = client.bucket('cloudcomputingcompilercode')
 
 def upload_file(file):
-  safe_filename = _safe_filename(file.filename)
-  blob = bucket.blob(safe_filename)
-  blob.upload_from_file(file)
-  url = blob.public_url
-  return url, safe_filename
+    safe_filename = _safe_filename(file.filename)
+    blob = bucket.blob(safe_filename)
+    blob.upload_from_file(file)
+    url = blob.public_url
+    return url, safe_filename
 
-def download_file(filename):
-  blob = bucket.blob(filename)
-  return blob.download_as_string()
+def download_file(filename, file):
+    blob = bucket.blob(filename)
+    blob.download_to_file(file)
   
+def delete_file(filename):
+    blob = bucket.blob(filename)
+    blob.delete()
+ 
 def _safe_filename(filename):
   filename = secure_filename(filename)
   date = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H%M%S")

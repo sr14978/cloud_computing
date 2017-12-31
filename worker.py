@@ -123,6 +123,7 @@ def link_step(message):
     rand = str(random.getrandbits(128))
     object_folder_path = '/tmp/' + rand + '-compiled/'
     os.makedirs(object_folder_path)
+    
     def download_object_files():
         for attrs_file in attrs_files:
             with open(object_folder_path + attrs_file['object_filename'], 'wb') as object_file:
@@ -141,7 +142,6 @@ def link_step(message):
     with open(executable_path, 'r') as executable_file:
         storage.upload_file(executable_file, flags['exename'])
     
-    shutil.rmtree(object_folder_path)
     shutil.rmtree(executable_folder_path)
     
     for attrs_file in attrs_files:

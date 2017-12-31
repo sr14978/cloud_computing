@@ -89,7 +89,7 @@ def convert_sourcepath_to_msg_path(sourcepath):
     return sourcepath.rsplit(".", 1)[0] + ".msg"
 
 def compile_step(message):
-    print("compile_step: + json.dumps(message))
+    print("compile_step: " + json.dumps(message))
     source_blob_name = message['data']
     
     messages.append(source_blob_name)

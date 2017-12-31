@@ -40,14 +40,14 @@ def ready(rand):
     
 @api.route("/results/<rand>", methods=['GET'])
 def results(rand):
-    if str(storage.file_exists(rand + "-job_result")):
+    if storage.file_exists(rand + "-job_result"):
         return storage.download_string(rand + "-job_result"), 200
     else:
         return "Not ready", 401
 
 @api.route("/executable/<rand>", methods=['GET'])
 def executable(rand):
-    if str(storage.file_exists(rand + "-executable")):
+    if storage.file_exists(rand + "-executable"):
         strIO = StringIO.StringIO()
         strIO.write(storage.download_string(rand + "-executable"))
         strIO.seek(0)

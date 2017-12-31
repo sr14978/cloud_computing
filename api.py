@@ -34,18 +34,18 @@ def submit():
     publish(data=data);   
     return rand, 200
     
-@api.route("/ready/<rand>", methods=['PUT'])
+@api.route("/ready/<rand>", methods=['GET'])
 def ready():
     return str(storage.file_exists(rand + "-job_result")), 200
     
-@api.route("/results/<rand>", methods=['PUT'])
+@api.route("/results/<rand>", methods=['GET'])
 def results():
     if str(storage.file_exists(rand + "-job_result")):
         return storage.download_string(rand + "-job_result"), 200
     else:
         return "Not ready", 401
 
-@api.route("/executable/<rand>", methods=['PUT'])
+@api.route("/executable/<rand>", methods=['GET'])
 def executable():
     if str(storage.file_exists(rand + "-executable")):
         strIO = StringIO.StringIO()

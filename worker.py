@@ -111,9 +111,12 @@ def link_step(message):
     object_paths = [object_folder_path + file_attrs['filename'] for file_attrs in files_attrs]
     executable_folder_path = '/tmp/' + rand + '-linked/' + flags['exename']
     linker.link(object_paths, executable_folder_path, flags['compiler'], flags['linker-flags'])
+    shutil.rmtree(object_folder_path)
     
     with open(executable_folder_path, 'r') as executable_file:
         storage.upload_file(executable_file, flags['exename'])
+    
+    shutil.rmtree(executable_folder_path)
     
     return 'Ok', 200
     

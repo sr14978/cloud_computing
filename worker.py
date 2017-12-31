@@ -103,6 +103,7 @@ def link_step(message):
     
     rand = str(random.getrandbits(128))
     object_folder_path = '/tmp/' + rand + '-compiled/'
+    os.makedirs(object_folder_path)
     for file_attrs in files_attrs:
         with open(object_folder_path + file_attrs['filename'], 'wb') as object_file:
             storage.download_file(file_attrs['blob_name'], object_file)

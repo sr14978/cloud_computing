@@ -57,17 +57,25 @@ def unzip_step(message):
                                 'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
                               }
             files.append(file_attributes)
-            data = json.dumps({'messages': [
-              {'attributes': {
-                'type': 'compile',
-                'flags': message['attributes']['flags'],
-                'file_attributes': file_attributes
-              }, 'data': safe_source_file_name}
-            ]})
+            data = json.dumps({
+              'messages': [{
+                'attributes': {
+                  'type': 'compile',
+                  'flags': message['attributes']['flags'],
+                  'file_attributes': file_attributes
+                },
+                'data': safe_source_file_name
+              }]
+            })
             publish(data=data)
     shutil.rmtree(folder_out_path)
     
-    data = json.dumps({'messages': [{'attributes': {'type': 'link', 'flags': message['attributes']['flags']}, 'data': json.dumps(files)}]})
+    data = json.dumps({'messages': [{'attributes': {
+      'type': 'link',
+      'flags': message['attributes']['flags'],
+      'job_result_blobname': message['attributes']['job_result_blobname'],
+      'executable_blobname': message['attributes']['executable_blobname']
+    }, 'data': json.dumps(files)}]})
     print(data)
     publish(data=data)
     
@@ -138,12 +146,19 @@ def link_step(message):
     os.makedirs(executable_folder_path)
     executable_path = executable_folder_path + flags['exename']
     
-    linker.link(msgs, download_object_files, executable_path, flags['compiler'], flags['linker-flags'])
+    msg = linker.link(msgs, download_object_files, executable_path, flags['compiler'], flags['linker-flags'])
     shutil.rmtree(object_folder_path)
     
-    with open(executable_path, 'r') as executable_file:
-        storage.upload_file(executable_file, flags['exename'])
+    ret = {
+      'success': isinstance(msg, linker.Success),
+      'messages': msg.msgs
+    }
+    storage.upload_string(json.dumps(ret), message['attributes']['job_result_blobname'])
     
+    if isinstance(msg, linker.Success):
+        with open(executable_path, 'r') as executable_file:
+            storage.upload_file(executable_file, message['attributes']['executable_blobname'])
+       
     shutil.rmtree(executable_folder_path)
     
     for attrs_file in attrs_files:

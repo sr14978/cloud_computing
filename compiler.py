@@ -11,7 +11,7 @@ class Error:
         self.warnings = warnings
         
 def compile(source_path, object_path, compiler='g++', flags=''):
-    print("compiling " + filename)
+    print("compiling " + source_path)
     cargs = [compiler, "-c", source_path, "-o", object_path] + flags.split(" ")
     try:
         return subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)

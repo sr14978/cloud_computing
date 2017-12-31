@@ -20,7 +20,8 @@ def delete_file(filename):
     blob.delete()
  
 def file_exists(filename):
-  return bucket.exists(filename)
+  blob = bucket.blob(filename)
+  return blob.exists()
  
 def safe_filename(filename):
   filename = secure_filename(filename)

@@ -3,6 +3,7 @@ import queue
 import storage
 import json
 import random
+import StringIO
 api = Blueprint('api_blueprint', __name__)
 
 recv_messages = []

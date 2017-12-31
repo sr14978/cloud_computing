@@ -83,15 +83,15 @@ def compile_step(message):
     
     messages.append(source_blob_name)
     rand = str(random.getrandbits(128))
-    source_folder = '/tmp/source-' + rand + '/'
-    
-    source_file_path = source_folder + source_blob_name
+    working_folder = '/tmp/source-' + rand + '/'
+    os.makedirs(working_folder)
+    source_file_path = working_folder + source_blob_name
     with open(source_file_path, 'wb') as source_file:
         storage.download_file(source_blob_name, source_file)
         
     flags = json.loads(message['attributes']['flags'])
     
-    object_file_path = source_folder + message['attributes']['file_attributes']['object_filename']
+    object_file_path = working_folder + message['attributes']['file_attributes']['object_filename']
     msg = compiler.compile(source_file_path, object_file_path, flags['compiler'], flags['compiler-flags'])
     os.remove(source_file_path)
     
@@ -101,7 +101,7 @@ def compile_step(message):
     with open(object_file_path, 'r') as object_file:
         storage.upload_file(object_file, message['attributes']['file_attributes']['object_blobname'])
         
-    os.remove(object_file_path)
+    shutil.rmtree(working_folder)
     storage.delete_file(source_blob_name)
     
     return 'Ok', 200
@@ -129,7 +129,10 @@ def link_step(message):
     
     msgs = [storage.download_string(attrs_file['msg_blobname']) for attrs_file in attrs_files]
     
-    executable_path = '/tmp/' + rand + '-linked/' + flags['exename']
+    executable_folder_path = '/tmp/' + rand + '-linked/'
+    os.makedirs(executable_folder_path)
+    executable_path = executable_folder_path + flags['exename']
+    
     linker.link(msgs, download_object_files, executable_path, flags['compiler'], flags['linker-flags'])
     shutil.rmtree(object_folder_path)
     
@@ -137,7 +140,7 @@ def link_step(message):
         storage.upload_file(executable_file, flags['exename'])
     
     shutil.rmtree(object_folder_path)
-    shutil.rmtree(executable_path)
+    shutil.rmtree(executable_folder_path)
     
     for attrs_file in attrs_files:
       storage.delete_file(attrs_file['object_blobname'])

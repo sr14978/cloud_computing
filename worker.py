@@ -6,31 +6,31 @@ import storage
 import random
 import os
 import shutil
-breakup = Blueprint('breakup_blueprint', __name__)
+worker = Blueprint('worker_blueprint', __name__)
 import unzipper
 import compiler
 import linker
 
 messages = []
-@breakup.route("/", methods=['POST'])
+@worker.route("/", methods=['POST'])
 def job():
     envelope = json.loads(request.data.decode('utf-8'))
     payload = base64.b64decode(envelope['message']['data'])
     
     message = json.loads(payload.decode('utf-8'))['messages'][0]
-    if message['attributes']['type'] == 'breakup':
+    if message['attributes']['type'] == 'unzip':
         return breakup_step(message)
     elif message['attributes']['type'] == 'compile':
         return compile_step(message)
     elif message['attributes']['type'] == 'link':
         return link_step(message)
 
-@breakup.route("/get")
+@worker.route("/get")
 def get():
     return str(messages)
     
 app = Flask(__name__)
-app.register_blueprint(breakup, url_prefix='/_ah/breakup')
+app.register_blueprint(worker, url_prefix='/_ah/worker')
 
 def breakup_step(message):
     blob_name = message['data']
@@ -44,7 +44,7 @@ def breakup_step(message):
     sources = unzipper.unzip(zip_filepath, folder_out_path)  
     os.remove(zip_filepath)
     
-    publish = queue.get_publisher('breakup')
+    publish = queue.get_publisher('worker')
     for source_file_name in sources:
         with open(folder_out_path + '/' + source_file_name, 'r') as source_file:
             url, safe_filename = storage.upload_file(source_file, source_file_name)
@@ -68,7 +68,7 @@ def compile_step(message):
     object_file_path, msgs = compiler.compile(source_file_path, flags['compiler'], flags['compiler-flags'])
     os.remove(source_file_path)
     
-    publish = queue.get_publisher('breakup')
+    publish = queue.get_publisher('worker')
     with open(object_file_path, 'r') as object_file:
         object_file_name = object_file_path.rsplit('/',1)[-1]
         url, safe_filename = storage.upload_file(object_file, object_file_name)

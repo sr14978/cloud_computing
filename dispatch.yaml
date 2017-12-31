@@ -1,6 +1,6 @@
 dispatch:
-  - url: "*/_ah/breakup"
-    service: breakup
+  - url: "*/_ah/worker"
+    service: worker
   - url: "*/api/*"
     service: api
   - url: "*/*"

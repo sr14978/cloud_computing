@@ -1,0 +1,5 @@
+env: flex
+runtime: python
+threadsafe: true
+service: worker
+entrypoint: gunicorn -b :$PORT worker:app

@@ -5,8 +5,8 @@ from werkzeug import secure_filename
 client = storage.Client(project='cloudcomputingcompliler')
 bucket = client.bucket('cloudcomputingcompilercode')
 
-def upload_file(file):
-    safe_filename = _safe_filename(file.filename)
+def upload_file(file, filename):
+    safe_filename = _safe_filename(filename)
     blob = bucket.blob(safe_filename)
     blob.upload_from_file(file)
     url = blob.public_url

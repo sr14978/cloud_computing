@@ -47,7 +47,7 @@ def breakup_step(message):
     publish = queue.get_publisher('breakup')
     for source_file_name in sources:
         with open(folder_out_path + '/' + source_file_name, 'r') as source_file:
-            url, safe_filename = storage.upload_file(source_file)
+            url, safe_filename = storage.upload_file(source_file, source_file_name)
             data = json.dumps({'messages': [{'attributes': {'type': 'compile', 'flags': message['attributes']['flags']}, 'data': safe_filename}]})
             publish(data=data)
     shutil.rmtree(folder_out_path)
@@ -70,7 +70,8 @@ def compile_step(message):
     
     publish = queue.get_publisher('breakup')
     with open(object_file_path, 'r') as object_file:
-        url, safe_filename = storage.upload_file(object_file)
+        object_file_name = object_file_path.rsplit('/',1)
+        url, safe_filename = storage.upload_file(object_file, object_file_name)
         data = json.dumps({'messages': [{'attributes': {'type': 'link', 'flags': message['attributes']['flags'], 'msgs': msgs}, 'data': safe_filename}]})
         publish(data=data)
         

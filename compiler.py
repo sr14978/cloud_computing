@@ -12,7 +12,7 @@ class Error:
         
 def compile(filename, compiler='g++', flags=''):
     print("compiling " + filename)
-    objectname = filename.split(".")[0] + ".o"
+    objectname = filename.rsplit(".", 1)[0] + ".o"
     cargs = [compiler, "-c", filename, "-o", objectname] + flags.split(" ")
     try:
         return objectname, subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)

@@ -14,7 +14,7 @@ def submit():
     f = request.files['source.zip']
     flags = request.form['flags']
     recv_messages.append(str(f))
-    url,name = storage.upload_file(f)
+    url,name = storage.upload_file(f, f.filename)
     publish = queue.get_publisher('breakup')
     data = json.dumps({'messages': [{'attributes': {'type': 'breakup', 'flags': flags}, 'data': name}]})
     publish(data=data);

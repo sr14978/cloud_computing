@@ -33,7 +33,7 @@ app = Flask(__name__)
 app.register_blueprint(worker, url_prefix='/_ah/worker')
 
 def unzip_step(message):
-    print("unzip_step: " + message)
+    print("unzip_step: " + json.dumps(message))
     blob_name = message['data']
     messages.append(blob_name)
     rand = str(random.getrandbits(128))
@@ -89,7 +89,7 @@ def convert_sourcepath_to_msg_path(sourcepath):
     return sourcepath.rsplit(".", 1)[0] + ".msg"
 
 def compile_step(message):
-    print("compile_step: " + message)
+    print("compile_step: + json.dumps(message))
     source_blob_name = message['data']
     
     messages.append(source_blob_name)
@@ -118,7 +118,7 @@ def compile_step(message):
     return 'Ok', 200
     
 def link_step(message):
-    print("link_step: " + message)
+    print("link_step: " + json.dumps(message))
     messages.append(message['data'])
     attrs_files = json.loads(message['data'])
     flags = json.loads(message['attributes']['flags'])

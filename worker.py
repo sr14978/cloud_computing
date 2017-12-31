@@ -115,6 +115,7 @@ def link_step(message):
     for attrs_file in attrs_files:
         if not storage.file_exists(attrs_file['msg_blobname']):
             data = json.dumps({'messages': [message]})
+            publish = queue.get_publisher('worker')
             publish(data=data)
             return 'Ok', 200
     

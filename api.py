@@ -35,18 +35,18 @@ def submit():
     return rand, 200
     
 @api.route("/ready/<rand>", methods=['GET'])
-def ready():
+def ready(rand):
     return str(storage.file_exists(rand + "-job_result")), 200
     
 @api.route("/results/<rand>", methods=['GET'])
-def results():
+def results(rand):
     if str(storage.file_exists(rand + "-job_result")):
         return storage.download_string(rand + "-job_result"), 200
     else:
         return "Not ready", 401
 
 @api.route("/executable/<rand>", methods=['GET'])
-def executable():
+def executable(rand):
     if str(storage.file_exists(rand + "-executable")):
         strIO = StringIO.StringIO()
         strIO.write(storage.download_string(rand + "-executable"))

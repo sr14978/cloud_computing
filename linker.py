@@ -19,12 +19,12 @@ class Failure(Result):
     def __init__(self, msgstr):
         self.msgs = self.process(msgstr)
 
-def link(msgs, get_object_files, exename, compiler, flags):
+def link(msgs, get_object_files, exename, compiler_name, flags):
     results = [pickle.loads(msg) for msg in msgs]
     msgs = merge(results)
     if all(map(lambda result: isinstance(result, compiler.Success), results)):
         objects = get_object_files()
-        cargs = [compiler, "-o", exename] + objects + flags.split(" ")
+        cargs = [compiler_name, "-o", exename] + objects + flags.split(" ")
         try:
             return Success(subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)) + msgs
         except subprocess.CalledProcessError as e:

@@ -91,6 +91,7 @@ def compile_step(message):
     
 def link_step(message):
     
+    messages.append(message['data'])
     files_attrs = json.loads(message['data'])
     flags = json.loads(message['attributes']['flags'])
     

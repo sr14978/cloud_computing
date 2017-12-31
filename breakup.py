@@ -65,7 +65,7 @@ def compile_step(message):
         storage.download_file(blob_name, source_file)
         
     flags = json.loads(message['attributes']['flags'])
-    object_file_path, msgs = compiler.compile(x, flags['compiler'], flags['compiler-flags'])
+    object_file_path, msgs = compiler.compile(source_file_path, flags['compiler'], flags['compiler-flags'])
     os.remove(source_file_path)
     
     publish = queue.get_publisher('breakup')

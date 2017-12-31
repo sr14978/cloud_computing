@@ -52,7 +52,7 @@ def unzip_step(message):
             storage.upload_file(source_file, safe_source_file_name)
             file_attributes = {
                                 'object_filename': convert_sourcepath_to_objectpath(source_file_name),
-                                'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name)
+                                'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name),
                                 'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
                               }
             files.append(file_attributes)

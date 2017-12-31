@@ -70,7 +70,7 @@ def compile_step(message):
     
     publish = queue.get_publisher('breakup')
     with open(object_file_path, 'r') as object_file:
-        object_file_name = object_file_path.rsplit('/',1)
+        object_file_name = object_file_path.rsplit('/',1)[-1]
         url, safe_filename = storage.upload_file(object_file, object_file_name)
         data = json.dumps({'messages': [{'attributes': {'type': 'link', 'flags': message['attributes']['flags'], 'msgs': msgs}, 'data': safe_filename}]})
         publish(data=data)

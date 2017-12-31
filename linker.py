@@ -1,6 +1,6 @@
 import subprocess
 import compiler
-import pickles
+import pickle
 
 class Result:
     def __add__(self, msgs):

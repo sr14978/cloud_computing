@@ -67,6 +67,7 @@ def unzip_step(message):
     shutil.rmtree(folder_out_path)
     
     data = json.dumps({'messages': [{'attributes': {'type': 'link', 'flags': message['attributes']['flags']}, 'data': json.dumps(files)}]})
+    print(data)
     publish(data=data)
     
     storage.delete_file(blob_name)

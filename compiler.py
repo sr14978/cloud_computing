@@ -6,11 +6,11 @@ def process(msgstr):
 
 class Success:
     def __init__(self, warnings):
-        self.warnings = process(warnings)
+        self.msgs = process(warnings)
 
 class Error:
     def __init__(self, msgs):
-        self.warnings = process(warnings)
+        self.msgs = process(msgs)
 
 def compile(source_path, object_path, compiler='g++', flags=''):
     print("compiling " + source_path + " to " + object_path + " using " + compiler)

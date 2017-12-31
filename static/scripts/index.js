@@ -18,6 +18,8 @@ function onLoad(e) {
     var file = file_input.files[0]
     var formData = new FormData();
     formData.append('source.zip', file);
+    //get the flags
+    //formData.append('flags', jsonstring_of_flags)
     console.log(formData);
     $.ajax({
        url : '/api/v1/submit',

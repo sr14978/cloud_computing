@@ -29,3 +29,12 @@ def submit():
     return "OK", 200
 
 app.register_blueprint(api, url_prefix='/api/v1')
+
+
+"""
+run by 
+pip install flask
+
+export['set' on windows] FLASK_APP=server.py
+python -m flask run
+"""

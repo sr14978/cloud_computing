@@ -13,7 +13,7 @@ class Error:
         self.warnings = process(warnings)
 
 def compile(source_path, object_path, compiler='g++', flags=''):
-    print("compiling " + source_path)
+    print("compiling " + source_path + " to " + object_path + " using " + compiler)
     cargs = [compiler, "-c", source_path, "-o", object_path] + flags.split(" ")
     # if this succeeds we wrap the result up in a Success object
     try:

@@ -21,16 +21,16 @@ class Failure(Result):
 
 def link(msgs, get_object_files, exename, compiler, flags):
     results = [pickle.loads(msg) for msg in msgs]
-    objects = get_object_files()
     msgs = merge(results)
     if all(map(lambda result: isinstance(result, compiler.Success), results)):
+        objects = get_object_files()
         cargs = [compiler, "-o", exename] + objects + flags.split(" ")
         try:
             return Success(subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)) + msgs
         except subprocess.CalledProcessError as e:
             return Failure(e.output) + msgs
     else:
-        return None
+        return Failure("") + msgs
 
 def merge(results): #[String]
     # results: List[compiler.Success | compiler.Failure]

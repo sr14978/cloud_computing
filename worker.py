@@ -151,7 +151,8 @@ def link_step(message):
     
     ret = {
       'success': isinstance(msg, linker.Success),
-      'messages': msg.msgs
+      'messages': msg.msgs,
+      'executable_name': flags['exename']
     }
     storage.upload_string(json.dumps(ret), message['attributes']['job_result_blobname'])
     

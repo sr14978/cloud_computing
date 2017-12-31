@@ -49,11 +49,12 @@ def results(rand):
 @api.route("/executable/<rand>", methods=['GET'])
 def executable(rand):
     if storage.file_exists(rand + "-executable"):
+        executable_name = json.loads(storage.download_string(rand + "-job_result"))['executable_name']
         strIO = StringIO.StringIO()
         strIO.write(storage.download_string(rand + "-executable"))
         strIO.seek(0)
         return send_file(strIO,
-                         attachment_filename="executable",
+                         attachment_filename=executable_name,
                          as_attachment=True), 200
     else:
         return "Not ready", 401

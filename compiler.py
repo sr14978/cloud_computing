@@ -11,9 +11,13 @@ class Error:
         self.warnings = warnings
         
 def compile(source_path, object_path, compiler='g++', flags=''):
-    print("compiling " + source_path)
+    print("compiling " + source_path + " to " + object_path + " using " + compiler)
     cargs = [compiler, "-c", source_path, "-o", object_path] + flags.split(" ")
+    
     try:
-        return subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
+        output = subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        return e.output
+        output = e.output
+        
+    print("compiled " + source_path + " to " + object_path + " using " + compiler + ". Output: " + output)
+    return output

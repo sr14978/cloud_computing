@@ -1,9 +1,15 @@
 import subprocess
 
 def link(msgs, get_object_files, exename, compiler, flags):
+    print("linking to " + exename + " using " + compiler)
     objects = get_object_files()
+    print("linking " + objects + " to " + exename + " using " + compiler)
+    
     cargs = [compiler, "-o", exename] + objects + flags.split(" ")
     try:
-        return subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
+        output = subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        return e.output
+        output = e.output
+    
+    print("linked " + objects + " to " + exename + " using " + compiler + ". Output: " + output)
+    return output

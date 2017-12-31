@@ -14,9 +14,10 @@ def submit():
     f = request.files['source.zip']
     flags = request.form['flags']
     recv_messages.append(str(f))
-    url,name = storage.upload_file(f, f.filename)
+    safe_filename = storage.safe_filename(f.filename)
+    storage.upload_file(f, safe_filename)
     publish = queue.get_publisher('worker')
-    data = json.dumps({'messages': [{'attributes': {'type': 'unzip', 'flags': flags}, 'data': name}]})
+    data = json.dumps({'messages': [{'attributes': {'type': 'unzip', 'flags': flags}, 'data': safe_filename}]})
     publish(data=data);
     return "OK", 200
     

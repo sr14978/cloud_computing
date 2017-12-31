@@ -10,11 +10,10 @@ class Error:
         self.filename = filename
         self.warnings = warnings
         
-def compile(filename, compiler='g++', flags=''):
+def compile(source_path, object_path, compiler='g++', flags=''):
     print("compiling " + filename)
-    objectname = filename.rsplit(".", 1)[0] + ".o"
-    cargs = [compiler, "-c", filename, "-o", objectname] + flags.split(" ")
+    cargs = [compiler, "-c", source_path, "-o", object_path] + flags.split(" ")
     try:
-        return objectname, subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
+        return subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        return objectname, e.output
+        return e.output

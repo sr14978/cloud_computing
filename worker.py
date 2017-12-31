@@ -19,7 +19,7 @@ def job():
     
     message = json.loads(payload.decode('utf-8'))['messages'][0]
     if message['attributes']['type'] == 'unzip':
-        return breakup_step(message)
+        return unzip_step(message)
     elif message['attributes']['type'] == 'compile':
         return compile_step(message)
     elif message['attributes']['type'] == 'link':
@@ -32,7 +32,7 @@ def get():
 app = Flask(__name__)
 app.register_blueprint(worker, url_prefix='/_ah/worker')
 
-def breakup_step(message):
+def unzip_step(message):
     blob_name = message['data']
     messages.append(blob_name)
     rand = str(random.getrandbits(128))
@@ -45,16 +45,25 @@ def breakup_step(message):
     os.remove(zip_filepath)
     
     publish = queue.get_publisher('worker')
+    files = []
     for source_file_name in sources:
         with open(folder_out_path + '/' + source_file_name, 'r') as source_file:
-            url, safe_filename = storage.upload_file(source_file, source_file_name)
-            data = json.dumps({'messages': [{'attributes': {'type': 'compile', 'flags': message['attributes']['flags']}, 'data': safe_filename}]})
+            safe_source_file_name = storage.safe_filename(source_file_name)
+            storage.upload_file(source_file, safe_source_file_name)
+            file_attributes = {'filename': convert_sourcepath_to_objectpath(source_file_name), 'blob_name': convert_sourcepath_to_objectpath(safe_source_file_name)}
+            files.append(file_attributes)
+            data = json.dumps({'messages': [{'attributes': {'type': 'compile', 'flags': message['attributes']['flags']}, 'data': safe_source_file_name}]})
             publish(data=data)
     shutil.rmtree(folder_out_path)
     
-    storage.delete_file(blob_name)
+    data = json.dumps({'messages': [{'attributes': {'type': 'link', 'flags': message['attributes']['flags']}, 'data': json.dumps(files)}]})
+    publish(data=data)
     
+    storage.delete_file(blob_name)
     return 'Ok', 200
+
+def convert_sourcepath_to_objectpath(sourcepath):
+    return source_file_path.rsplit(".", 1)[0] + ".o"
 
 def compile_step(message):
     blob_name = message['data']
@@ -65,15 +74,15 @@ def compile_step(message):
         storage.download_file(blob_name, source_file)
         
     flags = json.loads(message['attributes']['flags'])
-    object_file_path, msgs = compiler.compile(source_file_path, flags['compiler'], flags['compiler-flags'])
+    
+    object_file_path = convert_sourcepath_to_objectpath(source_file_path)
+    msgs = compiler.compile(source_file_path, object_file_path, flags['compiler'], flags['compiler-flags'])
     os.remove(source_file_path)
     
     publish = queue.get_publisher('worker')
     with open(object_file_path, 'r') as object_file:
         object_file_name = object_file_path.rsplit('/',1)[-1]
-        url, safe_filename = storage.upload_file(object_file, object_file_name)
-        data = json.dumps({'messages': [{'attributes': {'type': 'link', 'flags': message['attributes']['flags'], 'msgs': msgs}, 'data': safe_filename}]})
-        publish(data=data)
+        storage.upload_file(object_file, object_file_name)
         
     os.remove(object_file_path)
     storage.delete_file(blob_name)
@@ -81,9 +90,29 @@ def compile_step(message):
     return 'Ok', 200
     
 def link_step(message):
-    blob_name = message['data']
+    
+    files_attrs = json.loads(message['data'])
     flags = json.loads(message['attributes']['flags'])
-    #linker.link(flags['exename'], flags['compiler'], flags['linker-flags'])
+    
+    for file_attrs in files_attrs:
+        if not storage.file_exists(file_attrs['blob_name']):
+            data = json.dumps({'messages': [message]})
+            publish(data=data)
+            return 'Ok', 200
+    
+    rand = str(random.getrandbits(128))
+    object_folder_path = '/tmp/' + rand + '-compiled/'
+    for file_attrs in files_attrs:
+        with open(object_folder_path + file_attrs['filename'], 'wb') as object_file:
+            storage.download_file(file_attrs['blob_name'], object_file)
+    
+    object_paths = [object_folder_path + file_attrs['filename'] for file_attrs in files_attrs]
+    executable_folder_path = '/tmp/' + rand + '-linked/' + flags['exename']
+    linker.link(object_paths, executable_folder_path, flags['compiler'], flags['linker-flags'])
+    
+    with open(executable_folder_path, 'r') as executable_file:
+        storage.upload_file(executable_file, flags['exename'])
+    
     return 'Ok', 200
     
     

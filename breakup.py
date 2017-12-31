@@ -16,7 +16,7 @@ def job():
     envelope = json.loads(request.data.decode('utf-8'))
     payload = base64.b64decode(envelope['message']['data'])
     
-    message = json.loads(payload.decode('utf-8'))
+    message = json.loads(payload.decode('utf-8'))['messages'][0]
     if message['attributes']['type'] == 'breakup':
         return breakup_step(message)
     elif message['attributes']['type'] == 'compile':

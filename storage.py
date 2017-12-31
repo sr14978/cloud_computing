@@ -10,10 +10,20 @@ def upload_file(file, safe_filename):
     blob.upload_from_file(file)
     url = blob.public_url
     return url
+    
+def upload_string(string, safe_filename):
+    blob = bucket.blob(safe_filename)
+    blob.upload_from_string(string)
+    url = blob.public_url
+    return url
 
 def download_file(filename, file):
     blob = bucket.blob(filename)
     blob.download_to_file(file)
+  
+def download_string(filename):
+    blob = bucket.blob(filename)
+    return blob.download_as_string()
   
 def delete_file(filename):
     blob = bucket.blob(filename)

@@ -50,9 +50,19 @@ def unzip_step(message):
         with open(folder_out_path + '/' + source_file_name, 'r') as source_file:
             safe_source_file_name = storage.safe_filename(source_file_name)
             storage.upload_file(source_file, safe_source_file_name)
-            file_attributes = {'filename': convert_sourcepath_to_objectpath(source_file_name), 'blob_name': convert_sourcepath_to_objectpath(safe_source_file_name)}
+            file_attributes = {
+                                'object_filename': convert_sourcepath_to_objectpath(source_file_name),
+                                'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name)
+                                'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
+                              }
             files.append(file_attributes)
-            data = json.dumps({'messages': [{'attributes': {'type': 'compile', 'flags': message['attributes']['flags']}, 'data': safe_source_file_name}]})
+            data = json.dumps({'messages': [
+              {'attributes': {
+                'type': 'compile',
+                'flags': message['attributes']['flags'],
+                'file_attributes': file_attributes
+              }, 'data': safe_source_file_name}
+            ]})
             publish(data=data)
     shutil.rmtree(folder_out_path)
     
@@ -65,38 +75,45 @@ def unzip_step(message):
 def convert_sourcepath_to_objectpath(sourcepath):
     return sourcepath.rsplit(".", 1)[0] + ".o"
 
+def convert_sourcepath_to_msg_path(sourcepath):
+    return sourcepath.rsplit(".", 1)[0] + ".msg"
+
 def compile_step(message):
-    blob_name = message['data']
+    source_blob_name = message['data']
     
-    messages.append(blob_name)
-    source_file_path = '/tmp/' + blob_name
+    messages.append(source_blob_name)
+    rand = str(random.getrandbits(128))
+    source_folder = '/tmp/source-' + rand + '/'
+    
+    source_file_path = source_folder + source_blob_name
     with open(source_file_path, 'wb') as source_file:
-        storage.download_file(blob_name, source_file)
+        storage.download_file(source_blob_name, source_file)
         
     flags = json.loads(message['attributes']['flags'])
     
-    object_file_path = convert_sourcepath_to_objectpath(source_file_path)
-    msgs = compiler.compile(source_file_path, object_file_path, flags['compiler'], flags['compiler-flags'])
+    object_file_path = source_folder + message['attributes']['file_attributes']['object_filename']
+    msg = compiler.compile(source_file_path, object_file_path, flags['compiler'], flags['compiler-flags'])
     os.remove(source_file_path)
     
-    publish = queue.get_publisher('worker')
+    msg_blobname = message['attributes']['file_attributes']['msg_blobname']
+    storage.upload_string(msg, msg_blobname)
+    
     with open(object_file_path, 'r') as object_file:
-        object_file_name = object_file_path.rsplit('/',1)[-1]
-        storage.upload_file(object_file, object_file_name)
+        storage.upload_file(object_file, message['attributes']['file_attributes']['object_blobname'])
         
     os.remove(object_file_path)
-    storage.delete_file(blob_name)
+    storage.delete_file(source_blob_name)
     
     return 'Ok', 200
     
 def link_step(message):
     
     messages.append(message['data'])
-    files_attrs = json.loads(message['data'])
+    attrs_files = json.loads(message['data'])
     flags = json.loads(message['attributes']['flags'])
     
-    for file_attrs in files_attrs:
-        if not storage.file_exists(file_attrs['blob_name']):
+    for attrs_file in attrs_files:
+        if not storage.file_exists(attrs_file['msg_blobname']):
             data = json.dumps({'messages': [message]})
             publish(data=data)
             return 'Ok', 200
@@ -104,19 +121,27 @@ def link_step(message):
     rand = str(random.getrandbits(128))
     object_folder_path = '/tmp/' + rand + '-compiled/'
     os.makedirs(object_folder_path)
-    for file_attrs in files_attrs:
-        with open(object_folder_path + file_attrs['filename'], 'wb') as object_file:
-            storage.download_file(file_attrs['blob_name'], object_file)
+    def download_object_files():
+        for attrs_file in attrs_files:
+            with open(object_folder_path + attrs_file['object_filename'], 'wb') as object_file:
+                storage.download_file(attrs_file['object_blobname'], object_file)
+        return [object_folder_path + attrs_file['object_filename'] for attrs_file in attrs_files]
     
-    object_paths = [object_folder_path + file_attrs['filename'] for file_attrs in files_attrs]
-    executable_folder_path = '/tmp/' + rand + '-linked/' + flags['exename']
-    linker.link(object_paths, executable_folder_path, flags['compiler'], flags['linker-flags'])
+    msgs = [storage.download_string(attrs_file['msg_blobname']) for attrs_file in attrs_files]
+    
+    executable_path = '/tmp/' + rand + '-linked/' + flags['exename']
+    linker.link(msgs, download_object_files, executable_path, flags['compiler'], flags['linker-flags'])
     shutil.rmtree(object_folder_path)
     
-    with open(executable_folder_path, 'r') as executable_file:
+    with open(executable_path, 'r') as executable_file:
         storage.upload_file(executable_file, flags['exename'])
     
-    shutil.rmtree(executable_folder_path)
+    shutil.rmtree(object_folder_path)
+    shutil.rmtree(executable_path)
+    
+    for attrs_file in attrs_files:
+      storage.delete_file(attrs_file['object_blobname'])
+      storage.delete_file(attrs_file['msg_blobname'])
     
     return 'Ok', 200
     

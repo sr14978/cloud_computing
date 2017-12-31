@@ -1,6 +1,6 @@
 import subprocess
 
-def link(objects, exename, compiler, flags):
+def link(msgs, get_object_files, exename, compiler, flags):
     cargs = [compiler, "-o", exename] + objects + flags.split(" ")
     try:
         return subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)

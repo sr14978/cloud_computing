@@ -63,7 +63,7 @@ def unzip_step(message):
     return 'Ok', 200
 
 def convert_sourcepath_to_objectpath(sourcepath):
-    return source_file_path.rsplit(".", 1)[0] + ".o"
+    return sourcepath.rsplit(".", 1)[0] + ".o"
 
 def compile_step(message):
     blob_name = message['data']

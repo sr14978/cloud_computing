@@ -62,6 +62,10 @@ html {
   vertical-align: middle;
 }
 
+.compiler-options {
+  padding: 5px;
+}
+
 .waiting-step {
   display: none;
 }

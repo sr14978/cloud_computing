@@ -14,7 +14,15 @@ def home():
 @api.route("/submit", methods=['PUT'])
 def submit():
     f = request.files['source.zip']
-    flags = request.form['flags']
+    compiler = request.form['compiler']
+    compiler_flags = request.form['compiler-flags']
+    linker_flags = request.form['linker-flags']
+    flags = {
+      'compiler': compiler,
+      'exename': 'a.out',
+      'compiler-flags': compiler_flags,
+      'linker-flags': linker_flags
+    }
     recv_messages.append(str(f))
     safe_filename = storage.safe_filename(f.filename)
     storage.upload_file(f, safe_filename)
@@ -25,7 +33,7 @@ def submit():
       'messages': [{
         'attributes': {
           'type': 'unzip',
-          'flags': flags,
+          'flags': json.dumps(flags),
           'job_result_blobname': rand + "-job_result",
           'executable_blobname': rand + "-executable"
         },

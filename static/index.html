@@ -8,11 +8,11 @@
   <body>
     <div class="main-container">
       <h1 class="main-title">
-        <span class="main-title-text">Cloud Computing Compiler</span>
+        <span class="main-title-text">Cloud Computing: Linux Cloud C Compiler</span>
       </h1>
       <div id="upload_step" class="upload-step step">
         <div class="description padded-description">
-          <span class="step-number">Step 1</span> Select your source code from your computer. It must be packaged inside a single-level zip archive.
+          <span class="step-number">Step 1</span> Please upload a flat hierarchy zip containing your source files and headers. We will compile it for you, in parallel. 
         </div>
          <form id="fileUpload_form">
            <div class="form-content">
@@ -26,6 +26,33 @@
                 <div class="rect3"></div>
                 <div class="rect4"></div>
                 <div class="rect5"></div>
+              </div>
+              <div class="compiler-options">
+                Make sure to enter any necessary compiler flags you need!<br>
+                <input type="radio" id="language-c" name="language" value = "c"/>C
+                <input type="radio" id="language-cpp" name="language" value = "cpp" checked="true"/>C++<br>
+                
+                <select id="standard-cpp">
+                  <option value="none">No standard</option>
+                  <option value="cpp11">C++ 11</option>
+                  <option value="cpp14">C++ 14</option>
+                  <option value="cpp17">C++ 17</option>
+                </select>
+                <select id="standard-c">
+                  <option>No standard</option>
+                  <option>C89</option>
+                  <option>C99</option>
+                  <option>C11</option>
+                </select><br>
+                <select id="opt-level">
+                  <option>None</option>
+                  <option>O1</option>
+                  <option>O2</option>
+                  <option>O3</option>
+                  <option>Ofast</option>
+                </select><br>
+                Compiler Flags: <input type="text" id="compiler_flags"/><br>
+                Linker Flags: <input type="text" id ="linker_flags"/><br>
               </div>
             </div>
           </form>
@@ -62,3 +89,4 @@
     </div>
   </body>
 </html>
+

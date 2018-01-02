@@ -19,7 +19,7 @@
               <span class="file-selector">
                 <input type="file" id="file_input"/>
               </span>
-              <input type="submit" class="upload-button" value="Upload"/>
+              <input type="submit" id="submit_button" class="upload-button" value="Upload"/>
               <div id="uploading_spinner" class="spinner invisible">
                 <div class="rect1"></div>
                 <div class="rect2"></div>
@@ -31,19 +31,9 @@
                 Make sure to enter any necessary compiler flags you need!<br>
                 <input type="radio" id="language-c" name="language" value = "c"/>C
                 <input type="radio" id="language-cpp" name="language" value = "cpp" checked="true"/>C++<br>
-                
-                <select id="standard-cpp">
-                  <option value="none">No standard</option>
-                  <option value="cpp11">C++ 11</option>
-                  <option value="cpp14">C++ 14</option>
-                  <option value="cpp17">C++ 17</option>
-                </select>
-                <select id="standard-c">
-                  <option>No standard</option>
-                  <option>C89</option>
-                  <option>C99</option>
-                  <option>C11</option>
-                </select><br>
+                Langauge Standard
+                <select id="standard"></select><br>
+                Optimisation level: 
                 <select id="opt-level">
                   <option>None</option>
                   <option>O1</option>

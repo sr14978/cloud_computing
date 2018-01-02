@@ -131,7 +131,9 @@ function checkFinishedCompiling() {
        type : 'GET',
        success : function(data) {
          if(data == "True") {
-           stopCompilingAnimation()
+           
+           getResults();
+           
          } else if(data == "False") {
            setTimeout(checkFinishedCompiling, 500)
          } else {
@@ -144,6 +146,39 @@ function checkFinishedCompiling() {
     });
 }
 
+function getResults() {
+  
+  $.ajax({
+    dataType: "json",
+    url: '/api/v1/results/' + file_id,
+    success: function(data) {
+      
+      if(data['success']) {
+        document.getElementById('results_title').innerHTML = "Finished";
+      } else {
+        document.getElementById('results_title').innerHTML = "Could not compile";
+        document.getElementById('download_button_container').style.display = 'none'
+      }
+      
+      document.getElementById('results_text').innerHTML = data['messages'].toString()
+      
+      stopCompilingAnimation(data['success'])
+    },
+    error: function() {
+      $('#compiling_spinner').hide();
+      alert("could not get results")
+      location.reload();
+    }
+  });
+  
+}
+
+function makeCross() {
+  $('.tick').css('display', "none");
+  $('.cross__circle').toggleClass("go")
+  $('.cross__path').toggleClass("go")
+}
+
 function startUploadingAnimation() {
   $('#uploading_spinner').toggleClass("invisible")
 }
@@ -153,8 +188,12 @@ function startCompilingAnimation() {
   $('#waiting_step').slideDown()
 }
   
-function stopCompilingAnimation() {
+function stopCompilingAnimation(success) {
   $('#compiling_spinner').hide();
-  $(".trigger").toggleClass("drawn");
+  if(success) {
+    $(".tick-trigger").toggleClass("drawn");
+  } else {
+    makeCross();
+  }
   $('#download_step').slideDown();
 }

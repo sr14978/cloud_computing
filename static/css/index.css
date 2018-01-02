@@ -194,3 +194,42 @@ html {
     opacity: 1;
     stroke-dashoffset: 0;
 }
+/*cross*/
+
+.cross__svg {
+    width: 40px;
+    height: 40px;
+    vertical-align: middle;
+    display: inline-block;
+    stroke-width: 3;
+}
+
+.cross__circle {
+    fill: none;
+    margin: 0 auto;
+    stroke:  #e55454;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    stroke-width: 2;
+}
+
+.cross__path {
+    stroke: #e55454;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    transform-origin: 50% 50% 0;
+}
+
+.cross__path.go {
+  animation: 0.3s ease 0.8s normal forwards 1 running stroke;
+}
+  
+.cross__circle.go {
+  animation: 0.6s ease 0s normal forwards 1 running stroke;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}

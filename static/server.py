@@ -51,7 +51,12 @@ def ready(rand):
     
 @api.route("/results/<rand>", methods=['GET'])
 def results(rand):
-    return "Messages from server", 200
+    ret = {
+      'success': True,
+      'messages': ["warning: your code is shit", "only joking: you are maze"],
+      'executable_name': "a.out"
+    }
+    return json.dumps(ret), 200
 
 @api.route("/executable/<rand>", methods=['GET'])
 def executable(rand):

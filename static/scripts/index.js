@@ -21,6 +21,7 @@ function onLoad(e) {
     //get the flags
     //formData.append('flags', jsonstring_of_flags)
     console.log(formData);
+    startUploadingAnimation()
     $.ajax({
        url : '/api/v1/submit',
        type : 'PUT',
@@ -29,10 +30,28 @@ function onLoad(e) {
        contentType: false,
        enctype: 'multipart/form-data',
        success : function(data) {
-           console.log(data);
-           alert(data);
+          startCompilingAnimation()
+       },
+       error : function(data) {
+          $('#uploading_spinner').hide()
+          alert("There was an error in the request");
        }
     });
     
   }
+}
+
+function startUploadingAnimation() {
+  $('#uploading_spinner').toggleClass("invisible")
+}
+
+function startCompilingAnimation() {
+  $('#uploading_spinner').hide()
+  $('#waiting_step').slideDown()
+}
+  
+function stopCompilingAnimation() {
+  $('#compiling_spinner').hide();
+  $(".trigger").toggleClass("drawn");
+  $('#download_step').slideDown();
 }

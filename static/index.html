@@ -1,15 +1,64 @@
 <html>
-<head>
-<title>Cloud Compiler</title>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="/static/scripts/index.js?"></script>
-<link rel="stylesheet" href="/static/css/index.css?" />
-</head>
-<body>
-<h1 class="main-title">This is a cloud compiler</h1>
-<form id="fileUpload_form" >
-<input type="file" id="file_input"/>
-<input type="submit" />
-</form>
-</body>
+  <head>
+    <title>Cloud Compiler</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="/static/scripts/index.js?"></script>
+    <link rel="stylesheet" href="/static/css/index.css?" />
+  </head>
+  <body>
+    <div class="main-container">
+      <h1 class="main-title">
+        <span class="main-title-text">Cloud Computing Compiler</span>
+      </h1>
+      <div id="upload_step" class="upload-step step">
+        <div class="description padded-description">
+          <span class="step-number">Step 1</span> Select your source code from your computer. It must be packaged inside a single-level zip archive.
+        </div>
+         <form id="fileUpload_form">
+           <div class="form-content">
+              <span class="file-selector">
+                <input type="file" id="file_input"/>
+              </span>
+              <input type="submit" class="upload-button" value="Upload"/>
+              <div id="uploading_spinner" class="spinner invisible">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+              </div>
+            </div>
+          </form>
+      </div>
+      <div id="waiting_step" class="waiting-step step">
+        <div class="description waiting-description">
+          <span class="step-number">Step 2</span> Compiling
+        </div>
+        <div id="compiling_spinner" class="spinner">
+          <div class="rect1"></div>
+          <div class="rect2"></div>
+          <div class="rect3"></div>
+          <div class="rect4"></div>
+          <div class="rect5"></div>
+        </div>
+        <span class="trigger"></span>
+        <svg version="1.1" class="tick" x="0px" y="0px" viewBox="0 0 37 37" xml:space="preserve">
+          <path class="circ path" style="fill:none;stroke:#000;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;" d="M30.5,6.5L30.5,6.5c6.6,6.6,6.6,17.4,0,24l0,0c-6.6,6.6-17.4,6.6-24,0l0,0c-6.6-6.6-6.6-17.4,0-24l0,0C13.1-0.2,23.9-0.2,30.5,6.5z"	/>
+          <polyline class="tick path" style="fill:none;stroke:#000;stroke-width:3;stroke-linejoin:round;stroke-miterlimit:10;" points="11.6,20 15.9,24.2 26.4,13.8 "/>
+        </svg>
+      </div>
+      <div id="download_step" class="download-step step">
+        <div class="description padded-description">
+          <span class="step-number">Step 3</span> Finished
+        </div>
+        <div id="results_text" class="results-text">
+          The compilation was successful. Click to download executable.
+        </div>
+        <div class="download-button-container">
+          <input type="button" value="Download" class="download-button" id="download_button" />
+        </div>
+      </div>
+      
+    </div>
+  </body>
 </html>

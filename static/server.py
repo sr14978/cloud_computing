@@ -3,7 +3,11 @@ app = Flask(__name__)
 @app.route("/static/index.html")
 def index():
     return send_file('index.html')
-    
+
+@app.route("/static/index.xhtml")
+def xindex():
+    return send_file('index.xhtml')    
+
 @app.route("/static/css/index.css")
 def css():
     return send_file('css/index.css')
@@ -11,7 +15,7 @@ def css():
 @app.route("/static/scripts/index.js")
 def js():
     return send_file('scripts/index.js')
-    
+  
 api = Blueprint('api_blueprint', __name__)
 
 messages = []

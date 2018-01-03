@@ -3,7 +3,8 @@ import compiler
 import pickle
 import re
 from datetime import datetime
-from itertools import tee, zip_longest
+from itertools import tee
+from itertools import izip_longest as zip_longest
 
 class Result:
     def __add__(self, msgs):

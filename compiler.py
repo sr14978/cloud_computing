@@ -2,7 +2,8 @@ import subprocess
 import pickle
 import re
 from datetime import datetime
-from itertools import tee, zip_longest
+from itertools import tee
+from itertools import izip_longest as zip_longest
 
 def process(msgstr):
     uni = msgstr.decode("utf-8")

@@ -156,14 +156,14 @@ def link_step(message):
     os.makedirs(object_folder_path)
     
     def download_object_files():
-        print("Downloading object files for linking: " + attrs_files.join(','))
+        print("Downloading object files for linking: " + ','.join(attrs_files))
         for attrs_file in attrs_files:
             with open(object_folder_path + attrs_file['object_filename'], 'wb') as object_file:
                 storage.download_file(attrs_file['object_blobname'], object_file)
         return [object_folder_path + attrs_file['object_filename'] for attrs_file in attrs_files]
     
     msgs = [storage.download_string(attrs_file['msg_blobname']) for attrs_file in attrs_files]
-    print("Downloaded all compiler messages: " + msgs.join(','))
+    print("Downloaded all compiler messages: " + ','.join(msgs))
     
     executable_folder_path = '/tmp/' + rand + '-linked/'
     os.makedirs(executable_folder_path)

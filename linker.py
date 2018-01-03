@@ -32,7 +32,7 @@ class Failure(Result):
     def __init__(self, msgstr):
         self.msgs = self.process(msgstr)
 
-def link(msgs, get_object_files, exename, compiler_name, flags):
+def link(msgs, get_object_files, exename='a.out', compiler_name='g++', flags=''):
     results = [pickle.loads(msg) for msg in msgs]
     msgs = merge(results)
     if all(map(lambda result: isinstance(result, compiler.Success), results)):

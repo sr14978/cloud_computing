@@ -120,7 +120,7 @@ def compile_step(message):
     source_file_path = working_folder + source_blob_name
     with open(source_file_path, 'wb') as source_file:
         storage.download_file(source_blob_name, source_file)
-        print("Downloaded sourcefile: " + source_file)
+        print("Downloaded sourcefile: " + source_file_path)
         
     flags = json.loads(message['attributes']['flags'])
     

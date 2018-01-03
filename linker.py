@@ -8,7 +8,7 @@ from itertools import izip_longest as zip_longest
 
 class Result:
     def __add__(self, msgs):
-        print("linker.Result.__add__: self.msgs=" + self.msgs.toString() + " msgs= " + ",".join(msgs))
+        print("linker.Result.__add__: self.msgs=" + ",".join(self.msgs) + " msgs= " + ",".join(msgs))
         self.msgs = msgs + self.msgs
         return self
 

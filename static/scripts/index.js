@@ -10,12 +10,12 @@ function onLoad(e) {
   document.getElementById("download_button").addEventListener("click", download);
   document.getElementById("language-c").addEventListener("click", onChangeLanguage("c"));
   document.getElementById("language-cpp").addEventListener("click", onChangeLanguage("cpp"));
-  
+
   var standards =
   {
     "c" : [
       {
-        'display':'Default',
+        'display':'No Standard',
         'val':''
       },
       {
@@ -33,7 +33,7 @@ function onLoad(e) {
     ],
     "cpp" : [
       {
-        'display':'Default',
+        'display':'No Standard',
         'val':''
       },
       {
@@ -100,8 +100,7 @@ function onLoad(e) {
        }
     });
   }
-
-  // This doesn't quite work :\ oh well, gets the job done! :)
+  
   function onChangeLanguage(to)
   {
     return (e) =>
@@ -119,7 +118,7 @@ function onLoad(e) {
 
 function download() {
   var a = document.createElement('a');
-  a.href = '/api/v1/executable/' + file_id; 
+  a.href = '/api/v1/executable/' + file_id;
   a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
@@ -131,9 +130,9 @@ function checkFinishedCompiling() {
        type : 'GET',
        success : function(data) {
          if(data == "True") {
-           
+
            getResults();
-           
+
          } else if(data == "False") {
            setTimeout(checkFinishedCompiling, 500)
          } else {
@@ -147,21 +146,21 @@ function checkFinishedCompiling() {
 }
 
 function getResults() {
-  
+
   $.ajax({
     dataType: "json",
     url: '/api/v1/results/' + file_id,
     success: function(data) {
-      
+
       if(data['success']) {
         document.getElementById('results_title').innerHTML = "Finished";
       } else {
         document.getElementById('results_title').innerHTML = "Could not compile";
         document.getElementById('download_button_container').style.display = 'none'
       }
-      
+
       document.getElementById('results_text').innerHTML = data['messages'].toString()
-      
+
       stopCompilingAnimation(data['success'])
     },
     error: function() {
@@ -170,7 +169,7 @@ function getResults() {
       location.reload();
     }
   });
-  
+
 }
 
 function makeCross() {
@@ -187,7 +186,7 @@ function startCompilingAnimation() {
   $('#uploading_spinner').hide()
   $('#waiting_step').slideDown()
 }
-  
+
 function stopCompilingAnimation(success) {
   $('#compiling_spinner').hide();
   if(success) {

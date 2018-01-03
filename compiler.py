@@ -1,8 +1,19 @@
 import subprocess
 import pickle
+import re
+from datetime import datetime
+from itertools import tee, zip_longest
 
 def process(msgstr):
-    return [msgstr]
+    uni = msgstr.decode("utf-8")
+    today = datetime.today()
+    date_format = today.strftime("%Y-%m-%d")
+    stripped = re.sub(r'/tmp/.*?/|-' + date_format + r'-\d+', '', uni)
+    msg_starts = [match.start() for match in re.finditer(r'.*\.(cpp|c): ', stripped)]
+    if len(msg_starts) == 0: return []
+    start, end = tee(msg_starts)
+    next(end)
+    return [stripped[i:j] for i, j in zip_longest(start, end)]
 
 class Success:
     def __init__(self, warnings):

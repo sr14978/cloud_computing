@@ -27,9 +27,10 @@ class Error:
 def compile(source_path, object_path, compiler_name='g++', flags=''):
     print("compiling " + source_path + " to " + object_path + " using " + compiler_name)
     cargs = [compiler_name, "-c", source_path, "-o", object_path] + flags.split(" ")
+    print("running: " + cargs.join(" "))
     # if this succeeds we wrap the result up in a Success object
     try:
-        return pickle.dumps(Success(subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)))
+        return True, pickle.dumps(Success(subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)))
     # otherwise we return an Error object
     except subprocess.CalledProcessError as e:
-        return pickle.dumps(Error(e.output))
+        return False, pickle.dumps(Error(e.output))

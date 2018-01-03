@@ -23,12 +23,24 @@ function onLoad(e) {
         'val':' -std=c89'
       },
       {
+        'display':'GNU C89',
+        'val':' -std=gnu90'
+      },
+      {
         'display':'C99',
         'val':' -std=c99'
       },
       {
+        'display':'GNU C99',
+        'val':' -std=gnu99'
+      },
+      {
         'display':'C11',
         'val':' -std=c11'
+      },
+      {
+        'display':'GNU C11',
+        'val':' -std=gnu11'
       }
     ],
     "cpp" : [
@@ -37,16 +49,24 @@ function onLoad(e) {
         'val':''
       },
       {
+        'display':'C++ 98',
+        'val':' -std=c++98'
+      },
+      {
+        'display':'GNU C++ 98',
+        'val':' -std=gnu++98'
+      },
+      {
         'display':'C++ 11',
         'val':' -std=c++11'
       },
       {
-        'display':'C++ 14',
-        'val':' -std=c++14'
+        'display':'GNU C++ 11',
+        'val':' -std=gnu++11'
       },
       {
-        'display':'C++ 17',
-        'val':' -std=c++17'
+        'display':'C++ 14',
+        'val':' -std=c++14'
       }
     ]
   };
@@ -100,7 +120,7 @@ function onLoad(e) {
        }
     });
   }
-  
+
   function onChangeLanguage(to)
   {
     return (e) =>
@@ -158,7 +178,7 @@ function getResults() {
         document.getElementById('results_title').innerHTML = "Could not compile";
         document.getElementById('download_button_container').style.display = 'none'
       }
-      
+
       str = data['messages'].join("\n")
       str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
       document.getElementById('results_text').innerHTML = str

@@ -158,8 +158,10 @@ function getResults() {
         document.getElementById('results_title').innerHTML = "Could not compile";
         document.getElementById('download_button_container').style.display = 'none'
       }
-
-      document.getElementById('results_text').innerHTML = data['messages'].toString()
+      
+      str = data['messages'].join("\n")
+      str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
+      document.getElementById('results_text').innerHTML = str
 
       stopCompilingAnimation(data['success'])
     },

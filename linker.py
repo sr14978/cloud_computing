@@ -1,15 +1,26 @@
 import subprocess
 import compiler
 import pickle
+import re
+from datetime import datetime
+from itertools import tee, zip_longest
 
 class Result:
     def __add__(self, msgs):
-        self.msgs += msgs
+        self.msgs = msgs + self.msgs
         return self
 
     @classmethod
     def process(cls, msgstr):
-        return [msgstr]
+        uni = msgstr.decode("utf-8")
+        today = datetime.today()
+        date_format = today.strftime("%Y-%m-%d")
+        stripped = re.sub(r'/tmp/.*?/|-' + date_format + r'-\d+', '', uni)
+        msg_starts = [match.start() for match in re.finditer(r'.*\.o: ', stripped)]
+        if len(msg_starts) == 0: return []
+        start, end = tee(msg_starts)
+        next(end)
+        return [stripped[i:j] for i, j in zip_longest(start, end)]
 
 class Success(Result):
     def __init__(self, msgstr):

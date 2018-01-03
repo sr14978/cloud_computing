@@ -8,6 +8,7 @@ import os
 import shutil
 worker = Blueprint('worker_blueprint', __name__)
 import unzipper
+import preprocessor
 import compiler
 import linker
 
@@ -35,47 +36,60 @@ app.register_blueprint(worker, url_prefix='/_ah/worker')
 def unzip_step(message):
     print("unzip_step: " + json.dumps(message))
     blob_name = message['data']
+    flags = json.loads(message['attributes']['flags'])
+    
     messages.append(blob_name)
     rand = str(random.getrandbits(128))
     zip_filepath = '/tmp/source-' + rand + '.zip'
     with open(zip_filepath, 'wb') as zip_file:
         storage.download_file(blob_name, zip_file)
         
-    folder_out_path = '/tmp/' + rand + '-unpacked'
-    sources = unzipper.unzip(zip_filepath, folder_out_path)  
+    unzipped_folder_path = '/tmp/' + rand + '-unpacked'
+    sources = unzipper.unzip(zip_filepath, unzipped_folder_path)  
     os.remove(zip_filepath)
     
     publish = queue.get_publisher('worker')
-    files = []
+    files_attributes = []
+    preprocessed_folder_path = '/tmp/' + rand + '-preprocessed'
+    os.makedirs(preprocessed_folder_path)
     for source_file_name in sources:
-        with open(folder_out_path + '/' + source_file_name, 'r') as source_file:
-            safe_source_file_name = storage.safe_filename(source_file_name)
-            storage.upload_file(source_file, safe_source_file_name)
-            file_attributes = {
-                                'object_filename': convert_sourcepath_to_objectpath(source_file_name),
-                                'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name),
-                                'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
-                              }
-            files.append(file_attributes)
-            data = json.dumps({
-              'messages': [{
-                'attributes': {
-                  'type': 'compile',
-                  'flags': message['attributes']['flags'],
-                  'file_attributes': file_attributes
-                },
-                'data': safe_source_file_name
-              }]
-            })
-            publish(data=data)
-    shutil.rmtree(folder_out_path)
+        if source_file_name.endswith('.c') or source_file_name.endswith('.cpp'):
+            preprocessor.preprocess(
+                unzipped_folder_path + '/' + source_file_name,
+                preprocessed_folder_path + '/' + source_file_name,
+                flags['compiler'], flags['compiler-flags']
+            )
+    
+            with open(preprocessed_folder_path + '/' + source_file_name, 'r') as source_file:
+                safe_source_file_name = storage.safe_filename(source_file_name)
+                storage.upload_file(source_file, safe_source_file_name)
+                file_attributes = {
+                                    'object_filename': convert_sourcepath_to_objectpath(source_file_name),
+                                    'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name),
+                                    'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
+                                  }
+                files_attributes.append(file_attributes)
+                data = json.dumps({
+                  'messages': [{
+                    'attributes': {
+                      'type': 'compile',
+                      'flags': message['attributes']['flags'],
+                      'file_attributes': file_attributes
+                    },
+                    'data': safe_source_file_name
+                  }]
+                })
+                publish(data=data)
+            
+    shutil.rmtree(preprocessed_folder_path)
+    shutil.rmtree(unzipped_folder_path)
     
     data = json.dumps({'messages': [{'attributes': {
       'type': 'link',
       'flags': message['attributes']['flags'],
       'job_result_blobname': message['attributes']['job_result_blobname'],
       'executable_blobname': message['attributes']['executable_blobname']
-    }, 'data': json.dumps(files)}]})
+    }, 'data': json.dumps(files_attributes)}]})
     print(data)
     publish(data=data)
     

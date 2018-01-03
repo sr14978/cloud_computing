@@ -4,6 +4,7 @@ import storage
 import json
 import random
 import StringIO
+from google.api_core.exceptions import InvalidArgument
 api = Blueprint('api_blueprint', __name__)
 
 recv_messages = []
@@ -26,7 +27,11 @@ def submit():
     recv_messages.append(str(f))
     safe_filename = storage.safe_filename(f.filename)
     storage.upload_file(f, safe_filename)
-    publish = queue.get_publisher('worker')
+    
+    try:
+        publish = queue.get_publisher('worker')
+    except InvalidArgument:
+        return "Task queue not initialised", 500
     
     rand = str(random.getrandbits(128))
     data = json.dumps({

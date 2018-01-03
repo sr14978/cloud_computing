@@ -9,10 +9,8 @@ subscriber_client = pubsub.SubscriberClient()
 
 def get_publisher(name):
   topic_name = publisher_client.topic_path('cloudcomputingcompliler', name + '_jobs')
-  try:
-    publisher_client.create_topic(topic_name)
-  except AlreadyExists:
-    pass
+  
+  publisher_client.get_topic(topic_name)
 
   sub_name = subscriber_client.subscription_path('cloudcomputingcompliler', name + '_jobs')
   push_config = PushConfig()

@@ -48,7 +48,11 @@ def unzip_step(message):
     sources = unzipper.unzip(zip_filepath, unzipped_folder_path)  
     os.remove(zip_filepath)
     
-    publish = queue.get_publisher('worker')
+    try:
+        publish = queue.get_publisher('worker')
+    except InvalidArgument:
+        return "Task queue not initialised", 200
+    
     files_attributes = []
     preprocessed_folder_path = '/tmp/' + rand + '-preprocessed'
     os.makedirs(preprocessed_folder_path)
@@ -147,7 +151,10 @@ def link_step(message):
         if not storage.file_exists(attrs_file['msg_blobname']):
             print("Could not find: " + attrs_file['msg_blobname'] + " so rescheduling and exiting")
             data = json.dumps({'messages': [message]})
-            publish = queue.get_publisher('worker')
+            try:
+                publish = queue.get_publisher('worker')
+            except InvalidArgument:
+                return "Task queue not initialised", 200
             publish(data=data)
             return 'Ok', 200
     

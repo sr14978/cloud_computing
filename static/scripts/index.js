@@ -102,8 +102,13 @@ function onLoad(e) {
     formData.append('compiler-flags', compiler_flags);
     formData.append('linker-flags', linker_flags);
     
-    user_id=getAllUrlParams()['user_id']
-    formData.append('user_id', user_id);
+    var params = getAllUrlParams()
+    
+    if(!('user_id' in params)) {
+        alert("user_id not set")
+        return
+    }
+    formData.append('user_id', params['user_id']);
     
     console.log(formData);
     startUploadingAnimation()

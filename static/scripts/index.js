@@ -179,7 +179,7 @@ function getResults() {
         document.getElementById('download_button_container').style.display = 'none'
       }
 
-      str = data['messages'].join("\n")
+      var str = data['messages'].join("\n")
       str = str.replace(/(?:\r\n|\r|\n)/g, '<br />');
       document.getElementById('results_text').innerHTML = str
 

@@ -31,7 +31,7 @@ def update_user(user):
 def get_user(user_id):
 
     query = get_client().query(kind='User')
-    query.add_filter('user_id', '=', user)
+    query.add_filter('user_id', '=', user_id)
     fetch = query.fetch(1)
     results = list(fetch)
     if len(results) == 0:

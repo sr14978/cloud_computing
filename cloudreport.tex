@@ -73,8 +73,23 @@ submits them back to the end user.
 \section{Scalability}
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}
+A severe current limitation of our system is that it only supported Linux
+compilation, since the server we are provided with is a Linux server. In order
+to compile for Windows and other platforms, we would need investigate the use of
+MinGW on Linux in order to produce Windows binaries. For this proof of concept,
+however, this is not deemed to be a requirement.
 \subsection{More Languages}
+Currently, only C and C++ are supported languages. However, it would be possible
+in future work to include more languages that suffer from the same long
+compilation times. The limitation would be on what compilers are installed on
+the server, and whether or not we could install new ones.
 \subsection{Non-nested Zip Structure}
+A current limitation with the design is the requirement of a flattened zip
+structure for the uploaded source code. Ideally in future the app would be able
+to support any folder structure inside the zip and create the appropriate
+structure in the blob storage. This should not be too difficult to achieve, but
+we decided it does not add much to the application given that the main focus is
+on the parallel aspect.
 \section{Conclusion}
 %\begin{thebibliography}{00}
 

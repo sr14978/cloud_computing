@@ -3,6 +3,7 @@ import json
 import base64
 import queue
 import storage
+import database
 import random
 import os
 import shutil
@@ -103,7 +104,9 @@ def unzip_step(message):
       'type': 'link',
       'flags': message['attributes']['flags'],
       'job_result_blobname': message['attributes']['job_result_blobname'],
-      'executable_blobname': message['attributes']['executable_blobname']
+      'executable_blobname': message['attributes']['executable_blobname'],
+      'user_id': message['attributes']['user_id'],
+      'rand': message['attributes']['rand']
     }, 'data': json.dumps(files_attributes)}]})
     print("Submitting link job: " + data)
     publish(data=data)
@@ -215,6 +218,15 @@ def link_step(message):
             storage.delete_file(attrs_file['object_blobname'])
         storage.delete_file(attrs_file['msg_blobname'])
         print("Deleting object blob: " + attrs_file['object_blobname'] + " and msg blob: " + attrs_file['msg_blobname'])
+    
+    database.add_executable(
+      message['attributes']['user_id'],
+      {
+        'url': message['attributes']['rand'],
+        'success': ret['success'],
+        'name': flags['exename']
+      }
+    )
     
     return 'Ok', 200
     

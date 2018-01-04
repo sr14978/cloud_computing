@@ -25,6 +25,11 @@ def submit():
       'compiler-flags': compiler_flags,
       'linker-flags': linker_flags
     }
+    user_id = request.form['user_id']
+    user = database.get_user(user_id)
+    if user == None:
+        return "Invalid user", 401
+    
     recv_messages.append(str(f))
     safe_filename = storage.safe_filename(f.filename)
     storage.upload_file(f, safe_filename)
@@ -41,7 +46,9 @@ def submit():
           'type': 'unzip',
           'flags': json.dumps(flags),
           'job_result_blobname': rand + "-job_result",
-          'executable_blobname': rand + "-executable"
+          'executable_blobname': rand + "-executable",
+          'rand': rand,
+          'user_id': user_id
         },
         'data': safe_filename
       }]

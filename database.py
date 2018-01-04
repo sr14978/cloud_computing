@@ -38,3 +38,13 @@ def get_user(user_id):
         return None
     else:
         return results[0]
+        
+def add_executable(user_id, executable):
+    existing = get_user(user_id)
+    executables = existing['executables']
+    executables.append(executable)
+    user = {
+      'user_id': user_id,
+      'executables': executables
+    }
+    update(user, existing.key.id)

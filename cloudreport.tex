@@ -24,6 +24,10 @@ sr14978@bristol.ac.uk}
 \maketitle
 
 \begin{abstract}
+We present an application based in the cloud allowing users to compile large C
+or C++ projects in parallel, utilising Google App Engine. The application can
+compile projects by allowing a user to upload a flattened zip with the source
+code and headers. It is available online at \emph{LINK HERE}.
 \end{abstract}
 \section{Introduction}
 Large C or C++ projects often take a very long time to compile, and this is a
@@ -40,10 +44,52 @@ amount of strain on the system.
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how
 big the files are. This can prove to be a large advantage for much larger
-projects, that might otherwise take over half an hour to compile!
+projects, that might otherwise take over half an hour to compile! This technique
+also allows us to leverage multi-threaded compilers whilst also compiling files
+in parallel.
+
+% potentially add in more information?
+
 \section{Implementation}
-\section{Scalability Issues}
+\subsection{Overall Procedure}
+When a user uploads a zip file and submits the corresponding compiler and linker
+flags to the app, the following process must be undertaken; firstly, the zip
+file is unpacked server-side and the GCC macro pre-processor is ran over each of
+the source files. This allows us to discard the header files, since they have
+already been inserted, at the cost of file size. 
+
+Secondly, the files are uploaded onto the ``blob'' storage Google App Engine
+provides. All of the files are then placed into the work queue requesting
+compilation, and, additionally, a request for linking is placed onto the queue.
+
+Thirdly, various micro-service processors consume work from the queue; they
+download the relevant source file, compile it and upload the resulting file or
+error messages to the blob. At the same time, the linker process is waiting for
+all files to be finished and, if they were all successful, links the
+application and uploads the executable or coagulates the error messages and
+submits them back to the end user.
+\subsection{Underlying Architecture}
+% What is the language? What are we using, what's actually going on?
+\section{Scalability}
 \section{Future Work and Limitations}
+\subsection{Linux Only Compilation}
+A severe current limitation of our system is that it only supported Linux
+compilation, since the server we are provided with is a Linux server. In order
+to compile for Windows and other platforms, we would need investigate the use of
+MinGW on Linux in order to produce Windows binaries. For this proof of concept,
+however, this is not deemed to be a requirement.
+\subsection{More Languages}
+Currently, only C and C++ are supported languages. However, it would be possible
+in future work to include more languages that suffer from the same long
+compilation times. The limitation would be on what compilers are installed on
+the server, and whether or not we could install new ones.
+\subsection{Non-nested Zip Structure}
+A current limitation with the design is the requirement of a flattened zip
+structure for the uploaded source code. Ideally in future the app would be able
+to support any folder structure inside the zip and create the appropriate
+structure in the blob storage. This should not be too difficult to achieve, but
+we decided it does not add much to the application given that the main focus is
+on the parallel aspect.
 \section{Conclusion}
 %\begin{thebibliography}{00}
 

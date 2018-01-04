@@ -6,6 +6,10 @@ oauth2 = UserOAuth2()
 
 app = Flask(__name__)
 
+def _request_user_info(creds):
+    print("credentials: " + str(creds))
+
+
 oauth2.init_app(
         app,
         scopes=['email', 'profile'],
@@ -28,10 +32,3 @@ def history(user_id):
 def test():
     return "Test oauth2", 200
  
- 
-def _request_user_info(creds):
-    print("credentials: " + str(creds))
-
-
-
-

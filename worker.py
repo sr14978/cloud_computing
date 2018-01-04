@@ -126,6 +126,11 @@ def compile_step(message):
     working_folder = '/tmp/source-' + rand + '/'
     os.makedirs(working_folder)
     source_file_path = working_folder + source_blob_name
+    
+    if storage.file_exists(message['attributes']['file_attributes']['msg_blobname']):
+        shutil.rmtree(working_folder)
+        return "Ok", 200
+    
     with open(source_file_path, 'wb') as source_file:
         storage.download_file(source_blob_name, source_file)
         print("Downloaded sourcefile: " + source_file_path)

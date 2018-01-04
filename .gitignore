@@ -1,2 +1,7 @@
 node_modules
 go.bat
+/tmp/
+/cloudreport.pdf
+/cloudreport.synctex.gz
+/.project
+/.texlipse

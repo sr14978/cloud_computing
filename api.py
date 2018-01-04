@@ -1,6 +1,7 @@
 from flask import Flask, Blueprint, request, send_file
 import queue
 import storage
+import database
 import json
 import random
 import StringIO
@@ -72,6 +73,15 @@ def executable(rand):
     else:
         return "Not ready", 401
 
+
+@api.route("/user_id/<user_id>", methods=['GET'])
+def get(user_id):
+    user = database.get_user(user_id)
+    if user != None:
+        return json.dumps(user['executables']), 200
+    else:
+        return "Invalid user", 401
+    
    
 app = Flask(__name__)
 app.register_blueprint(api, url_prefix='/api/v1')

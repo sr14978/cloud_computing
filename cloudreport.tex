@@ -26,7 +26,21 @@ sr14978@bristol.ac.uk}
 \begin{abstract}
 \end{abstract}
 \section{Introduction}
+Large C or C++ projects often take a very long time to compile, and this is a
+large waste of time for developers. Many compilers are not multi-threaded,
+since the process of compilation and optimisation must be done in an ordering with
+many dependencies. Despite this, however, each file in itself is completely
+orthogonal to every other file (until link-time). This results in an ability to
+compile multiple files at once by using scripts that launch many compiler
+instances in separate threads. This is a good improvement on the compilation
+process, but it is limited by the number of processor cores you have.
+Additionally, if your compiler \emph{is} multi-threaded, this will place a large
+amount of strain on the system.
 
+Our solution is to leverage multiple processors, distributed across the cloud,
+each of which can handle the compilation of one or many files depending on how
+big the files are. This can prove to be a large advantage for much larger
+projects, that might otherwise take over half an hour to compile!
 \section{Implementation}
 \section{Scalability Issues}
 \section{Future Work and Limitations}

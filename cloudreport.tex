@@ -24,6 +24,10 @@ sr14978@bristol.ac.uk}
 \maketitle
 
 \begin{abstract}
+We present an application based in the cloud allowing users to compile large C
+or C++ projects in parallel, utilising Google App Engine. The application can
+compile projects by allowing a user to upload a flattened zip with the source
+code and headers. It is available online at \emph{LINK HERE}.
 \end{abstract}
 \section{Introduction}
 Large C or C++ projects often take a very long time to compile, and this is a
@@ -40,10 +44,20 @@ amount of strain on the system.
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how
 big the files are. This can prove to be a large advantage for much larger
-projects, that might otherwise take over half an hour to compile!
+projects, that might otherwise take over half an hour to compile! This technique
+also allows us to leverage multi-threaded compilers whilst also compiling files
+in parallel.
+
+% potentially add in more information?
+
 \section{Implementation}
+\subsection{Overall procedure}
+\subsection{Underlying Architecture}
 \section{Scalability Issues}
 \section{Future Work and Limitations}
+\subsection{Linux Only Compilation}
+\subsection{More Languages}
+\subsection{Non-nested Zip Structure}
 \section{Conclusion}
 %\begin{thebibliography}{00}
 

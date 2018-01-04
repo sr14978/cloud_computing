@@ -25,7 +25,7 @@ def history(user_id):
 
 @app.route("/test")
 @oauth2.required
-def test()
+def test():
     return "Test oauth2", 200
  
  

@@ -10,7 +10,7 @@ def process(msgstr):
     today = datetime.today()
     date_format = today.strftime("%Y-%m-%d")
     stripped = re.sub(r'/tmp/.*?/|-' + date_format + r'-\d+', '', uni)
-    msg_starts = [match.start() for match in re.finditer(r'.*\.(cpp|c): |.+ .*?\.h', stripped)]
+    msg_starts = [match.start() for match in re.finditer(r'.*\.(cpp|c): |In file included from .*\.', stripped)]
     if len(msg_starts) == 0: return [stripped]
     start, end = tee(msg_starts)
     next(end)

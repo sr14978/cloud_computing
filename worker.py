@@ -93,7 +93,7 @@ def unzip_step(message):
                     })
                     publish(data=data)
             else:
-                print("Preprocessed of " + source_file_name + " failed: " + ','.join(msg))
+                print("Preprocessed of " + source_file_name + " failed: " + msg)
                 storage.upload_string(msg, file_attributes['msg_blobname'])
             
     shutil.rmtree(preprocessed_folder_path)

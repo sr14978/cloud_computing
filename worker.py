@@ -206,9 +206,10 @@ def link_step(message):
     shutil.rmtree(executable_folder_path)
     
     for attrs_file in attrs_files:
-      storage.delete_file(attrs_file['object_blobname'])
-      storage.delete_file(attrs_file['msg_blobname'])
-      print("Deleting object blob: " + attrs_file['object_blobname'] + " and msg blob: " + attrs_file['msg_blobname'])
+        if storage.file_exists(attrs_file['object_blobname']):
+            storage.delete_file(attrs_file['object_blobname'])
+        storage.delete_file(attrs_file['msg_blobname'])
+        print("Deleting object blob: " + attrs_file['object_blobname'] + " and msg blob: " + attrs_file['msg_blobname'])
     
     return 'Ok', 200
     

@@ -14,7 +14,8 @@ oauth2.init_app(
         app,
         scopes=['email', 'profile'],
         authorize_callback=_request_user_info,
-        client_secret='\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4')
+        client_id='540065309258-l47khtteovcjo07i65gbhp85tf83uqec.apps.googleusercontent.com',
+        client_secret='Uzka-as21BkyzH53OeYnfniW')
 
 @app.route("/")
 def index():

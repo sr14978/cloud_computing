@@ -11,7 +11,7 @@ def process(msgstr):
     date_format = today.strftime("%Y-%m-%d")
     stripped = re.sub(r'/tmp/.*?/|-' + date_format + r'-\d+', '', uni)
     msg_starts = [match.start() for match in re.finditer(r'.*\.(cpp|c): ', stripped)]
-    if len(msg_starts) == 0: return []
+    if len(msg_starts) == 0: return [stripped]
     start, end = tee(msg_starts)
     next(end)
     return [stripped[i:j] for i, j in zip_longest(start, end)]

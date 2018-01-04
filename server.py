@@ -1,23 +1,40 @@
-from flask import Flask, send_file, Blueprint, request
+from flask import Flask, send_file, Blueprint, request, render_template
 import json
 import io
 
 app = Flask(__name__)
 @app.route("/static/index.html")
 def index():
-    return send_file('index.html')
+    return send_file('static/index.html')
 
 @app.route("/static/index.xhtml")
 def xindex():
-    return send_file('index.xhtml')    
+    return send_file('static/index.xhtml')    
 
 @app.route("/static/css/index.css")
 def css():
-    return send_file('css/index.css')
+    return send_file('static/css/index.css')
     
 @app.route("/static/scripts/index.js")
 def js():
-    return send_file('scripts/index.js')
+    return send_file('static/scripts/index.js')
+    
+@app.route("/history/index.html")
+def history():
+    return render_template('history.html',
+    executables=[
+      {'url':'24345123213', 'name':'fred', 'success': True},
+      {'url':'34534345234', 'name':'pete', 'success': False},
+      {'url':'12345234545213', 'name':'max', 'success': True},
+      {'url':'314434323213', 'name':'alice', 'success': False}])
+    
+@app.route("/static/scripts/history.js")
+def historyjs():
+    return send_file('static/scripts/history.js')
+    
+@app.route("/static/css/history.css")
+def historycss():
+    return send_file('static/css/history.css')
   
 api = Blueprint('api_blueprint', __name__)
 

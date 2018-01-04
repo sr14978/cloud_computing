@@ -13,7 +13,7 @@ def update(data, id=None):
 
     entity = datastore.Entity(
         key=key,
-        exclude_from_indexes=['description'])
+        exclude_from_indexes=['executables'])
 
     entity.update(data)
     client.put(entity)

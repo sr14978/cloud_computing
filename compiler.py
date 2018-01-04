@@ -14,7 +14,7 @@ def process(msgstr):
     if len(msg_starts) == 0: return [stripped]
     start, end = tee(msg_starts)
     next(end)
-    return [stripped[i:j] for i, j in zip_longest(start, end)]
+    return [stripped[i:j] for i, j in zip_longest(start, end) if "style of line directive is a GCC extension" not in stripped[i:j]]
 
 class Success:
     def __init__(self, warnings):

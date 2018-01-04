@@ -2,15 +2,13 @@ from flask import Flask, redirect, render_template
 import database
 from oauth2client.contrib.flask_util import UserOAuth2
 
-oauth2 = UserOAuth2()
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4'
 
 def _request_user_info(creds):
-    print("credentials: " + str(creds))
+    print("credentials: " + str(creds.get_access_token()))
 
-
+oauth2 = UserOAuth2()
 oauth2.init_app(
         app,
         scopes=['email', 'profile'],

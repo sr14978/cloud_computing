@@ -13,7 +13,8 @@ def _request_user_info(creds):
 oauth2.init_app(
         app,
         scopes=['email', 'profile'],
-        authorize_callback=_request_user_info)
+        authorize_callback=_request_user_info,
+        client_secret='\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4')
 
 @app.route("/")
 def index():

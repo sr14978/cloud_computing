@@ -51,8 +51,22 @@ in parallel.
 % potentially add in more information?
 
 \section{Implementation}
-\subsection{Overall procedure}
+\subsection{Overall Procedure}
+When a user uploads a zip file and submits the corresponding compiler and linker
+flags to the app, the following process must be undertaken; firstly, the zip
+file is unpacked server-side and the GCC macro pre-processor is ran over each of
+the source files. This allows us to discard the header files, since they have
+already been inserted, at the cost of file size. Secondly, the files are
+uploaded onto the ``blob'' storage Google App Engine provides. All of the files
+are then placed into the work queue requesting compilation, and, additionally,
+a request for linking is placed onto the queue. Thirdly, various micro-service
+processors consume work from the queue; they download the relevant source file,
+compile it and upload the resulting file or error messages to the blob. At the
+same time, the linker process is waiting for all files to be finished and, if
+they were all successful, links the application and uploads the executable or
+coagulates the error messages and submits them back to the end user.
 \subsection{Underlying Architecture}
+% What is the language? What are we using, what's actually going on?
 \section{Scalability}
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}

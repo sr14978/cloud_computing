@@ -163,7 +163,8 @@ def link_step(message):
     os.makedirs(object_folder_path)
     
     def download_object_files():
-        print("Downloading object files for linking: " + ','.join(attrs_files))
+        object_filenames = [attrs_file['object_filename'] for attrs_file in attrs_files]
+        print("Downloading object files for linking: " + ','.join(object_filenames))
         for attrs_file in attrs_files:
             with open(object_folder_path + attrs_file['object_filename'], 'wb') as object_file:
                 storage.download_file(attrs_file['object_blobname'], object_file)

@@ -10,4 +10,5 @@ def preprocess(source_path, out_path, compiler_name='g++', flags=''):
     try:
         return True, pickle.dumps(Success(subprocess.check_output([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)))
     except subprocess.CalledProcessError as e:
+        print('preprocessor error output', e.output)
         return False, pickle.dumps(Error(e.output))

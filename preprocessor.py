@@ -5,5 +5,6 @@ def preprocess(source_path, out_path, compiler_name='g++', flags=''):
     cargs = [compiler_name, "-E", source_path, "-o", out_path] + flags.split(" ")
     try:
         subprocess.call([arg for arg in cargs if arg != ""], stderr=subprocess.STDOUT)
+        return True, None
     except subprocess.CalledProcessError as e:
-        print(e.output)
+        return False, e.output

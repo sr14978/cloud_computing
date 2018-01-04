@@ -59,34 +59,41 @@ def unzip_step(message):
     for source_file_name in sources:
         print("dealing with: " + source_file_name)
         if source_file_name.endswith('.c') or source_file_name.endswith('.cpp'):
-            preprocessor.preprocess(
+            success, msg = preprocessor.preprocess(
                 unzipped_folder_path + '/' + source_file_name,
                 preprocessed_folder_path + '/' + source_file_name,
                 flags['compiler'], flags['compiler-flags']
             )
-            print("Preprocessed: " + source_file_name)
-    
-            with open(preprocessed_folder_path + '/' + source_file_name, 'r') as source_file:
-                safe_source_file_name = storage.safe_filename(source_file_name)
-                storage.upload_file(source_file, safe_source_file_name)
-                print("Uploaded file: " + source_file_name + " to: " + safe_source_file_name)
-                file_attributes = {
-                                    'object_filename': convert_sourcepath_to_objectpath(source_file_name),
-                                    'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name),
-                                    'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
-                                  }
-                files_attributes.append(file_attributes)
-                data = json.dumps({
-                  'messages': [{
-                    'attributes': {
-                      'type': 'compile',
-                      'flags': message['attributes']['flags'],
-                      'file_attributes': file_attributes
-                    },
-                    'data': safe_source_file_name
-                  }]
-                })
-                publish(data=data)
+            
+            safe_source_file_name = storage.safe_filename(source_file_name)
+            file_attributes = {
+                                'object_filename': convert_sourcepath_to_objectpath(source_file_name),
+                                'object_blobname': convert_sourcepath_to_objectpath(safe_source_file_name),
+                                'msg_blobname': convert_sourcepath_to_msg_path(safe_source_file_name)
+                              }
+            files_attributes.append(file_attributes)
+            
+            if success:
+                print("Preprocessed: " + source_file_name)
+                with open(preprocessed_folder_path + '/' + source_file_name, 'r') as source_file:
+                    
+                    storage.upload_file(source_file, safe_source_file_name)
+                    print("Uploaded file: " + source_file_name + " to: " + safe_source_file_name)
+                    
+                    data = json.dumps({
+                      'messages': [{
+                        'attributes': {
+                          'type': 'compile',
+                          'flags': message['attributes']['flags'],
+                          'file_attributes': file_attributes
+                        },
+                        'data': safe_source_file_name
+                      }]
+                    })
+                    publish(data=data)
+            else:
+                print("Preprocessed of " + source_file_name + " failed: " + ','.join(msg))
+                storage.upload_string(msg, file_attributes['msg_blobname'])
             
     shutil.rmtree(preprocessed_folder_path)
     shutil.rmtree(unzipped_folder_path)

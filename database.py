@@ -51,6 +51,7 @@ def add_executable(user_id, executable):
     executables.append(executable)
     user = {
       'user_id': user_id,
+      'name': existing['name'],
       'executables': executables
     }
     update(user, existing.key.id)

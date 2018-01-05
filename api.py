@@ -6,6 +6,10 @@ import json
 import random
 import StringIO
 from google.api_core.exceptions import InvalidArgument
+
+app = Flask(__name__)
+app.config['SECRET_KEY'] = '\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4'
+
 api = Blueprint('api_blueprint', __name__)
 
 recv_messages = []
@@ -27,7 +31,7 @@ def submit():
     }
     
     if not 'user_id' in session:
-        return "Invalid user", 401
+        return "User_id not available", 401
         
     user_id = session['user_id']
     print("user_id:", user_id)
@@ -86,14 +90,18 @@ def executable(rand):
         return "Not ready", 401
 
 
-@api.route("/user_id/<user_id>", methods=['GET'])
-def get(user_id):
+@api.route("/user_id", methods=['GET'])
+@oauth2.required
+def get
+    if 'user_id' in session:
+        user_id = session['user_id']
+    else:
+        return "User_id not available", 401
     user = database.get_user(user_id)
     if user != None:
         return json.dumps(user['executables']), 200
     else:
         return "Invalid user", 401
     
-   
-app = Flask(__name__)
+
 app.register_blueprint(api, url_prefix='/api/v1')

@@ -54,15 +54,26 @@ in parallel.
 
 \section{Implementation}
 \subsection{Overall Procedure}
+\begin{figure}[ht] % ht
+    \centering
+    \includegraphics[width=3.2in]{WorkArchitecture.png}
+    \caption{Workflow chart}
+    \label{fig:overview}
+\end{figure}
+
 A user visits the website provided by the front end service. They send a zip file along with the corresponding compiler and linker flags to the API using the webapp.
 
 Then, in the cloud, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
 
-Upon completion of the compilation, the results file and executable is uploaded to blob storage and becomes available for the app to download.
+Upon completion of the compilation, the results file and executable is uploaded
+to object storage and becomes available for the app to download.
 
 The compilation process consists of three steps:
 Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over each of
-the source files to include all necessary definitions between them. This allows us to discard the header files, since they have already been inserted, at the cost of source file size. These source files are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together. 
+the source files to include all necessary headers. This allows us to discard the
+header files, removing the need to transfer them \emph{all} to workers for
+\emph{every} source file, at the cost of source file size. These source files
+are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together.
 
 Secondly, for each compilation task of a source file, the file is downloaded from object storage and compiled locally. The object file, along with any warnings and errors is then collected and stored back to object storage.
 
@@ -76,7 +87,7 @@ itself and returns. Finally, it uploads the executable or coagulated error messa
     \centering
     \includegraphics[width=3.2in]{OverallArchitecture.png}
     \caption{Overall architecture}
-    \label{fig:overview}
+    \label{fig:underlying}
 \end{figure}
 
 Our solution consists of a collection of independent micro services, each

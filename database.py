@@ -44,7 +44,10 @@ def get_user(user_id):
         
 def add_executable(user_id, executable):
     existing = get_user(user_id)
-    executables = existing['executables']
+    if 'executables' in existing:
+        executables = existing['executables']
+    else:
+        executables = []
     executables.append(executable)
     user = {
       'user_id': user_id,

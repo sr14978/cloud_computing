@@ -59,7 +59,11 @@ def history():
       user_id = session['user_id']
       user = database.get_user(user_id)
       if user != None:
-          return render_template('history.html', executables=user['executables'], name=user['name'])
+          if 'executables' in existing:
+              executables = existing['executables']
+          else:
+              executables = []
+          return render_template('history.html', executables=executables, name=user['name'])
 
     return "Invalid user", 401
 

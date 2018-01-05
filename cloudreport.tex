@@ -81,6 +81,8 @@ The solution consists of a collection of independent micro services, each manage
 To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API.
 \\\\
 All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services.
+\\\\
+The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service and handles re-scheduling if the  job is not completed.
 
 \section{Scalability}
 \section{Future Work and Limitations}

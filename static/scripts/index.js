@@ -102,6 +102,7 @@ function onLoad(e) {
     formData.append('compiler-flags', compiler_flags);
     formData.append('linker-flags', linker_flags);
     
+    /*
     var params = getAllUrlParams()
     
     if(!('user_id' in params)) {
@@ -109,6 +110,7 @@ function onLoad(e) {
         return
     }
     formData.append('user_id', params['user_id']);
+    */
     
     console.log(formData);
     startUploadingAnimation()

@@ -22,6 +22,8 @@ def update(data, id=None):
 create = update
     
 def create_user(user):
+    if not 'executables' in user:
+        user['executables'] = []
     create(user)
 
 def update_user(user):

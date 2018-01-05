@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, request, send_file
+from flask import Flask, Blueprint, request, send_file, session
 import queue
 import storage
 import database
@@ -25,7 +25,12 @@ def submit():
       'compiler-flags': compiler_flags,
       'linker-flags': linker_flags
     }
-    user_id = request.form['user_id']
+    
+    if not 'user_id' in session:
+        return "Invalid user", 401
+        
+    user_id = session['user_id']
+    print("user_id:", user_id)
     user = database.get_user(user_id)
     if user == None:
         return "Invalid user", 401

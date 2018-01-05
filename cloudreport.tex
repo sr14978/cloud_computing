@@ -49,19 +49,6 @@ also allows us to leverage multi-threaded compilers whilst also compiling files
 in parallel.
 
 % potentially add in more information?
-\section{sam}
-
-The solution consists of a collection of independent micro services, each managed separately by Google App engine. 
-
-- There is a front end service which provides access to users though web pages including static and dynamic content.
-
-- The site web-app makes Ajax requests to the API service, provides access to all the functions through a rest-full interface.
-
-- The third micro-service conducts a map-then-reduce process to compile the given source code and store it to object storage. We could have created 3 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any on the actions so will reduce server usage on light loads.
-
-To store information about users we have used Google's cloud Datastore offering which is has Atomic transactions, uses a distributed architecture with a balance of strong and eventual consistency. 
-
-
 
 \section{Implementation}
 \subsection{Overall Procedure}
@@ -82,7 +69,18 @@ all files to be finished and, if they were all successful, links the
 application and uploads the executable or coagulates the error messages and
 submits them back to the end user.
 \subsection{Underlying Architecture}
-% What is the language? What are we using, what's actually going on?
+
+The solution consists of a collection of independent micro services, each managed separately by Google App engine. 
+
+- There is a front end service which provides access to users though web pages including static and dynamic content.
+
+- The site web-app makes Ajax requests to the API service, provides access to all the functions through a rest-full interface.
+
+- The third micro-service conducts a map-then-reduce process to compile the given source code and store it to object storage. We could have created 3 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any on the actions so will reduce server usage on light loads.
+
+To store information about users we have used Google's cloud Datastore offering which is has Atomic transactions, uses a distributed architecture with a balance of strong and eventual consistency. 
+
+
 \section{Scalability}
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}

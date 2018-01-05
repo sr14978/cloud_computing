@@ -30,7 +30,7 @@ compile projects by allowing a user to upload a flattened zip with the source
 code and headers. It is available online at \emph{LINK HERE}.
 \end{abstract}
 \section{Introduction}
-Large C or C++ projects often take a very long time to compile, and this is a
+In industry, very large C or C++ projects are common. These can take a very long time to compile, and this is a
 large waste of time for developers. Many compilers are not multi-threaded,
 since the process of compilation and optimisation must be done in an ordering with
 many dependencies. Despite this, however, each file in itself is completely
@@ -52,25 +52,24 @@ in parallel.
 
 \section{Implementation}
 \subsection{Overall Procedure}
-When a user uploads a zip file and submits the corresponding compiler and linker
-flags to the app, the following process must be undertaken; firstly, the zip
-file is unpacked server-side and the GCC macro pre-processor is ran over each of
-the source files. This allows us to discard the header files, since they have
-already been inserted, at the cost of file size. 
+A user sends a zip file and submits the corresponding compiler and linker
+flags to the API using the app.
 
-Secondly, the files are uploaded onto the ``blob'' storage Google App Engine
-provides. All of the files are then placed into the work queue requesting
-compilation, and, additionally, a request for linking is placed onto the queue.
+Then, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
 
-Thirdly, various micro-service processors consume work from the queue; they
-download the relevant source file, compile it and upload the resulting file or
-error messages to the blob. At the same time, the linker process is waiting for
-all files to be finished and, if they were all successful, links the
-application and uploads the executable or coagulates the error messages and
-submits them back to the end user.
+Upon completion of the compilation the results file and executable is uploaded to blob storage and becomes available for the app to download.
+
+The compilation process is 3 steps:
+Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over each of
+the source files to include all necessary definitions between files. This allows us to discard the header files, since they have already been inserted, at the cost of file size. These source files are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together. 
+
+Secondly, for each compilation task of a source file, the file is downloaded from object storage and compiled locally. The object file, along with any warnings and errors are then collected and stored back to object storage.
+
+Thirdly, the linker checks that all files have been compiled (else it re-schedules it's self for later) then if they were all successful downloads them in to a local folder before linking them together in to an executable. Finally it uploads the executable or coagulated error messages to be available to the user.
+
 \subsection{Underlying Architecture}
 
-The solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances. Each micro-service is written in python using the Flask web framework. 
+The solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances. Each micro-service is written in python using the Flask web framework\cite{Flask}. 
 
 - There is a front end service which provides access to users though web pages including static and dynamic content.
 
@@ -119,7 +118,13 @@ structure in the blob storage. This should not be too difficult to achieve, but
 we decided it does not add much to the application given that the main focus is
 on the parallel aspect.
 \section{Conclusion}
-%\begin{thebibliography}{00}
 
-%\end{thebibliography}
+This is a conclusion.
+
+\begin{thebibliography}{00}
+\bibitem{Flask}
+    Flask: a web microframework for Python
+    \url{http://flask.pocoo.org/}
+\end{thebibliography}
+
 \end{document}

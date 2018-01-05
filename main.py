@@ -59,8 +59,8 @@ def history():
       user_id = session['user_id']
       user = database.get_user(user_id)
       if user != None:
-          if 'executables' in existing:
-              executables = existing['executables']
+          if 'executables' in user:
+              executables = user['executables']
           else:
               executables = []
           return render_template('history.html', executables=executables, name=user['name'])

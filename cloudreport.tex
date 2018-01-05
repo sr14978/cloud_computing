@@ -5,6 +5,7 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{url}
+
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
@@ -140,7 +141,6 @@ overhead of starting up new instances for new requests. Automatic scaling uses a
 
 You can also host multiple versions of software and do incremental feature rollouts by using traffic splitting to gradually upgrade the service with minimal disruption.
 
-
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}
 A severe current limitation of our system is that it only supported Linux
@@ -160,7 +160,22 @@ to support any folder structure inside the zip and create the appropriate
 structure in the blob storage. This should not be too difficult to achieve, but
 we decided it does not add much to the application given that the main focus is
 on the parallel aspect.
+\subsection{New Compilers}
+The current implementation of this application only allows us to make use of GCC
+and G++ compilers. Ideally, we would also like to support the MSVC compiler and
+Clang. The former is an example of a compiler that indeed runs multicore, which
+would therefore not benefit from simple multi-threaded command line compilation
+and is well suited to cloud compilation.
 \section{Conclusion}
+In this paper we have presented a means to compile large projects whilst
+leveraging the scalable power of a cloud platform using micro-services. We have
+made a working prototype that is both horizontally and vertically scaling to
+meet both user demand and reach performance goals for per user job submitions.
+The level of parallelism that this application can achieve is likely to outweigh
+the performance observed with the naive multi-threaded approach. The application
+is available online at
+\textbf{\url{https://cloudcomputingcompliler.appspot.com}} [sic].
+This paper is bundled with an example zip file you can submit to the app.
 
 \begin{thebibliography}{00}
 \bibitem{GAE}

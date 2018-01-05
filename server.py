@@ -1,8 +1,26 @@
-from flask import Flask, send_file, Blueprint, request, render_template
+from flask import Flask, send_file, Blueprint, request, render_template, redirect, session
 import json
 import io
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'secret'
+
+@app.route("/")
+def slash():
+    if 'user_id' in session:
+        return redirect('/loggedin')
+    else:
+        return redirect('/static/index.html')
+
+@app.route("/loggedin")
+def loggedin():
+    if 'user_id' in session:
+        return render_template('index.html', name='Sam Rusell')
+    else:
+        session['user_id'] = '1'
+        return redirect('/static/index.html')
+
+        
 @app.route("/static/index.html")
 def index():
     return send_file('static/index.html')
@@ -26,7 +44,9 @@ def history():
       {'url':'24345123213', 'name':'fred', 'success': True},
       {'url':'34534345234', 'name':'pete', 'success': False},
       {'url':'12345234545213', 'name':'max', 'success': True},
-      {'url':'314434323213', 'name':'alice', 'success': False}])
+      {'url':'314434323213', 'name':'alice', 'success': False}],
+    name='Sam Rusell'  
+      )
     
 @app.route("/static/scripts/history.js")
 def historyjs():

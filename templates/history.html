@@ -11,17 +11,21 @@
       <h1 class="main-title">
         <span class="main-title-text">Cloud Computing: Linux Cloud C Compiler</span>
       </h1>
+      <div class="nav-bar">
+          <h2>
+              <div class="little-title-text"><span>History | <a href="/">New</a></span><span class="name">{{name}}</span></div>
+          </h2>
+      </div>
       <div class="history-content">
-        <h2>History</h2>
         <ul class="links">
         {% for exe in executables %}
             <li>
                 <div class="item-title">
                   <span class="name">{{ exe.name }}</span>
-                  <input type="button" value="Messages" class="message-button"/>
+                  <input type="button" value="Show Messages" class="message-button"/>
                   <input type="hidden" value="/api/v1/results/{{ exe.url }}"  class="message-url"//>
                   {% if exe.success %}
-                      <a href="/api/v1/executable/{{ exe.url }}" class="link message-exe">Executable</a>
+                      <a href="/api/v1/executable/{{ exe.url }}" class="link message-exe">Download Executable</a>
                   {% endif %}
                   <div class="spinner invisible">
                     <div class="rect1"></div>

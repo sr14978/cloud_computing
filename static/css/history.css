@@ -48,7 +48,7 @@ li {
 
 .name {
   display: inline-block;
-  width: 100px;
+  width: 200px;
   overflow: hidden;
   vertical-align: middle;
 }

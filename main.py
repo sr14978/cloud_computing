@@ -35,19 +35,33 @@ oauth2.init_app(
         client_secret='Uzka-as21BkyzH53OeYnfniW')
 
 @app.route("/")
+def slash():
+    if 'user_id' in session:
+        return redirect('/loggedin')
+    else:
+        return redirect('/static/index.html')
+
+@app.route("/loggedin")
 @oauth2.required
-def index():
-    return redirect('/static/index.html')
-    
+def loggedin():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        user = database.get_user(user_id)
+        return render_template('index.html', name=user['name'])
+    else:
+        session['user_id'] = '1'
+        return redirect('/static/index.html')  
+        
 @app.route("/history/index.html")
 @oauth2.required
 def history():
-    user_id = session['user_id']
-    user = database.get_user(user_id)
-    if user != None:
-        return render_template('history.html', executables=user['executables'])
-    else:
-        return "Invalid user", 401
+    if 'user_id' in session:
+      user_id = session['user_id']
+      user = database.get_user(user_id)
+      if user != None:
+          return render_template('history.html', executables=user['executables'], name=user['name'])
+
+    return "Invalid user", 401
 
 @app.route("/test")
 @oauth2.required

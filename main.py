@@ -1,12 +1,21 @@
 from flask import Flask, redirect, render_template
 import database
 from oauth2client.contrib.flask_util import UserOAuth2
-
+import httplib2
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4'
 
 def _request_user_info(creds):
-    print("credentials: " + str(creds.get_access_token()))
+    http = httplib2.Http()
+    credentials.authorize(http)
+    resp, content = http.request(
+        'https://www.googleapis.com/plus/v1/people/me')
+
+    if resp.status != 200:
+        print("Error while obtaining user profile: \n%s: %s", resp, content)
+        return
+
+    print("credentials: ", json.loads(content.decode('utf-8')))
 
 oauth2 = UserOAuth2()
 oauth2.init_app(

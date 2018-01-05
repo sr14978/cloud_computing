@@ -219,14 +219,18 @@ def link_step(message):
         storage.delete_file(attrs_file['msg_blobname'])
         print("Deleting object blob: " + attrs_file['object_blobname'] + " and msg blob: " + attrs_file['msg_blobname'])
     
-    database.add_executable(
-      message['attributes']['user_id'],
-      {
-        'url': message['attributes']['rand'],
-        'success': ret['success'],
-        'name': flags['exename']
-      }
-    )
+    if message['attributes']['user_id'] != None:
+        print("user logged in: ", message['attributes']['user_id'])
+        database.add_executable(
+          message['attributes']['user_id'],
+          {
+            'url': message['attributes']['rand'],
+            'success': ret['success'],
+            'name': flags['exename']
+          }
+        )
+    else:
+        print("no user logged in")
     
     return 'Ok', 200
     

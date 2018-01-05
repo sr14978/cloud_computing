@@ -30,14 +30,15 @@ def submit():
       'linker-flags': linker_flags
     }
     
-    if not 'user_id' in session:
-        return "User_id not available", 401
-        
-    user_id = session['user_id']
-    print("user_id:", user_id)
-    user = database.get_user(user_id)
-    if user == None:
-        return "Invalid user", 401
+    if 'user_id' in session:
+        user_id = session['user_id']
+        print("user logged in: ", user_id)
+        user = database.get_user(user_id)
+        if user == None:
+            return "Invalid user", 401
+    else:
+        print("no user logged in")
+        user_id=None
     
     recv_messages.append(str(f))
     safe_filename = storage.safe_filename(f.filename)

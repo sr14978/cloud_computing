@@ -70,16 +70,17 @@ application and uploads the executable or coagulates the error messages and
 submits them back to the end user.
 \subsection{Underlying Architecture}
 
-The solution consists of a collection of independent micro services, each managed separately by Google App engine. 
+The solution consists of a collection of independent micro services, each managed separately by Google App engine. They are written in python using the Flask web framework.
 
 - There is a front end service which provides access to users though web pages including static and dynamic content.
 
-- The site web-app makes Ajax requests to the API service, provides access to all the functions through a rest-full interface.
+- The site web-app makes Ajax requests to the API service, which provides access to all the functions through a rest-full interface.
 
-- The third micro-service conducts a map-then-reduce process to compile the given source code and store it to object storage. We could have created 3 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any on the actions so will reduce server usage on light loads.
-
-To store information about users we have used Google's cloud Datastore offering which is has Atomic transactions, uses a distributed architecture with a balance of strong and eventual consistency. 
-
+- The third micro-service conducts a map-then-reduce process to compile the given source code and store it to object storage. We could have created 3 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
+\\\\
+To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API.
+\\\\
+All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services.
 
 \section{Scalability}
 \section{Future Work and Limitations}

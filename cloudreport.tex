@@ -72,6 +72,13 @@ in to an executable. If the objects file are not all ready it reschedules
 itself and returns. Finally, it uploads the executable or coagulated error messages to be available to the user.
 
 \subsection{Underlying Architecture}
+\begin{figure}[ht] % ht
+    \centering
+    \includegraphics[width=3.2in]{OverallArchitecture.png}
+    \caption{Overall architecture}
+    \label{fig:overview}
+\end{figure}
+
 Our solution consists of a collection of independent micro services, each
 managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances \cite{GAE}. Each micro-service is written in Python using the Flask web framework \cite{Flask}:
 

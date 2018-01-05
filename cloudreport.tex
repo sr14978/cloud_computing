@@ -60,7 +60,7 @@ Then, in the cloud, the zip file is tagged and uploaded to object storage, a tas
 
 Upon completion of the compilation, the results file and executable is uploaded to blob storage and becomes available for the app to download.
 
-The compilation process consists 3 steps:
+The compilation process consists of three steps:
 Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over each of
 the source files to include all necessary definitions between them. This allows us to discard the header files, since they have already been inserted, at the cost of source file size. These source files are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together. 
 

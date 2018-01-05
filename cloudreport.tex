@@ -145,9 +145,10 @@ You can also host multiple versions of software and do incremental feature rollo
 \subsection{Linux Only Compilation}
 A severe current limitation of our system is that it only supported Linux
 compilation, since the server we are provided with is a Linux server. In order
-to compile for Windows and other platforms, we would need investigate the use of
-MinGW on Linux in order to produce Windows binaries. For this proof of concept,
-however, this is not deemed to be a requirement.
+to compile for Windows and other platforms, we would need to compile our own
+cross-compilers for GCC that run on Linux but target other platforms, which is
+quite involved. For this proof of concept, however, this is not deemed to be a
+requirement.
 \subsection{More Languages}
 Currently, only C and C++ are supported languages. However, it would be possible
 in future work to include more languages that suffer from the same long

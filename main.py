@@ -2,6 +2,7 @@ from flask import Flask, redirect, render_template
 import database
 from oauth2client.contrib.flask_util import UserOAuth2
 import httplib2
+import json
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4'
 

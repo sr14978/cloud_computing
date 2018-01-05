@@ -25,6 +25,7 @@ def create_user(user):
     if not 'executables' in user:
         user['executables'] = []
     create(user)
+    print("created new user: ", user);
 
 def update_user(user):
     id = get_user(user['user_id']).key.id

@@ -70,7 +70,7 @@ application and uploads the executable or coagulates the error messages and
 submits them back to the end user.
 \subsection{Underlying Architecture}
 
-The solution consists of a collection of independent micro services, each managed separately by Google App engine. They are written in python using the Flask web framework.
+The solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances. Each micro-service are written in python using the Flask web framework. 
 
 - There is a front end service which provides access to users though web pages including static and dynamic content.
 
@@ -85,6 +85,9 @@ All files are stored in Google's Cloud Object storage offering that provides a u
 The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service and handles re-scheduling if the  job is not completed.
 
 \section{Scalability}
+
+There 
+
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}
 A severe current limitation of our system is that it only supported Linux

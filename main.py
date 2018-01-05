@@ -5,7 +5,7 @@ import httplib2
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '\xde{\xcb\xd0\x97gi\x9a\x9f\x18G\xb2\x18\xed8d\xd2\x9e[\xa4=\xf5\xac\xa4'
 
-def _request_user_info(creds):
+def _request_user_info(credentials):
     http = httplib2.Http()
     credentials.authorize(http)
     resp, content = http.request(

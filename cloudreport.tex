@@ -53,29 +53,29 @@ in parallel.
 
 \section{Implementation}
 \subsection{Overall Procedure}
-A user sends a zip file and submits the corresponding compiler and linker
-flags to the API using the app.
+A user visits the website provided by the front end service. They send a zip file along with the corresponding compiler and linker flags to the API using the webapp.
 
-Then, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
+Then, in the cloud, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
 
-Upon completion of the compilation the results file and executable is uploaded to blob storage and becomes available for the app to download.
+Upon completion of the compilation, the results file and executable is uploaded to blob storage and becomes available for the app to download.
 
-The compilation process is 3 steps:
+The compilation process consists 3 steps:
 Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over each of
-the source files to include all necessary definitions between files. This allows us to discard the header files, since they have already been inserted, at the cost of file size. These source files are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together. 
+the source files to include all necessary definitions between them. This allows us to discard the header files, since they have already been inserted, at the cost of source file size. These source files are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together. 
 
-Secondly, for each compilation task of a source file, the file is downloaded from object storage and compiled locally. The object file, along with any warnings and errors are then collected and stored back to object storage.
+Secondly, for each compilation task of a source file, the file is downloaded from object storage and compiled locally. The object file, along with any warnings and errors is then collected and stored back to object storage.
 
 Thirdly, the linker checks that all files have been compiled then, if they were
 all successful, downloads them in to a local folder before linking them together
 in to an executable. If the objects file are not all ready it reschedules
-itself. Finally it uploads the executable or coagulated error messages to be available to the user.
+itself and returns. Finally, it uploads the executable or coagulated error messages to be available to the user.
+
 \subsection{Underlying Architecture}
 Our solution consists of a collection of independent micro services, each
-managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances. Each micro-service are written in Python using the Flask web framework:
+managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances \cite{GAE}. Each micro-service is written in Python using the Flask web framework \cite{Flask}:
 
 \begin{itemize}
-\item Front end service which provides access to users though web
+\item A Front end service which provides access to users though web
 pages including static and dynamic content.
 
 \item An API service, which provides
@@ -88,11 +88,13 @@ compile the given source code and store it to object storage.
 We could have created three
 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
 
+The static content to be served to the user is cached in a geographically distributed fashion on Google's Content Management System. This did cause some issues in testing since when uploading a new version, the old code was still present in the cache so the content did not update. However, in production this improves the latency of resource retrieval greatly.
+
 To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
 
-All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services.
+All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages. 
 
-The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service and handles re-scheduling if the  job is not completed.
+The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service. It can protect the workers from large surges in demand using flow control dynamic rate limiting. Also, it improves robustness since it guarantees at-least-once messaging by re-scheduling failed jobs.
 
 \section{Scalability}
 
@@ -142,6 +144,10 @@ on the parallel aspect.
 \section{Conclusion}
 
 \begin{thebibliography}{00}
+\bibitem{GAE}
+    Google App Engine: A PaaS offering auto scaling instances
+    \url{https://cloud.google.com/appengine/docs/flexible/}
+
 \bibitem{Flask}
     Flask: a web microframework for Python
     \url{http://flask.pocoo.org/}

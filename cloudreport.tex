@@ -70,18 +70,26 @@ application and uploads the executable or coagulates the error messages and
 submits them back to the end user.
 \subsection{Underlying Architecture}
 
-The solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances. Each micro-service are written in python using the Flask web framework. 
+The solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances. Each micro-service are written in Python using the Flask web framework:
 
-- There is a front end service which provides access to users though web pages including static and dynamic content.
+\begin{itemize}
+\item Front end service which provides access to users though web
+pages including static and dynamic content.
 
-- The site web-app makes Ajax requests to the API service, which provides access to all the functions through a rest-full interface.
+\item An API service, which provides
+access to all the functions through a RESTful interface.
 
-- The third micro-service conducts a map-then-reduce process to compile the given source code and store it to object storage. We could have created 3 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
-\\\\
+\item The third micro-service conducts a \emph{map-then-reduce} process to
+compile the given source code and store it to object storage. 
+\end{itemize}
+
+We could have created three
+sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
+
 To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API.
-\\\\
+
 All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services.
-\\\\
+
 The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service and handles re-scheduling if the  job is not completed.
 
 \section{Scalability}

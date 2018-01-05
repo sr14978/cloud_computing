@@ -91,7 +91,6 @@ def executable(rand):
 
 
 @api.route("/user_id", methods=['GET'])
-@oauth2.required
 def get():
     if 'user_id' in session:
         user_id = session['user_id']

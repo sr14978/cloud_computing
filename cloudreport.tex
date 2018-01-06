@@ -180,9 +180,19 @@ guarantees about the data still being there when you next need it since it may
 be cleared at any time to make space for someone else's use. This means it is
 only really appropriate for static content.
 
-We included user accounts on the application so users can check up on compilations they have done previously and download the resulting executables. For this we integrated with Google's identity API using OAuth2. To do this, we used a flask plugin called UserOAuth2\cite{oauth} to redirect to Google's authentication page and handle the response token by looking up the user details on Google Plus such as name and user id number. 
+We included user accounts on the application so users can check up on
+compilations they have done previously and download the resulting executables.
+For this we integrated with Google's identity API using OAuth2. To do this, we
+used a flask plugin called UserOAuth2\cite{oauth} to redirect to Google's
+authentication page and handle the response token by looking up the user
+details on Google Plus such as name and user id number.
 
-After a user has logged on, we want to store their credentials so that we can customise their experience. We found the simplest way to do this in a distributed system is to store the them in the browser of the user. This means that they will get sent with each request identifying who it has come from. Flask's session plug-in makes this easy and secure by encrypting the information before it is sent and decrypting it again on receipt.
+After a user has logged on, we want to store their credentials so that we can
+customise their experience. We found the simplest way to do this in a
+distributed system is to store the them in the browser of the user. This means
+that they will get sent with each request identifying who it has come from.
+Flask's session plug-in makes this easy and secure by encrypting the
+information before it is sent and decrypting it again on receipt.
 
 \section{Scalability}
 

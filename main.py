@@ -31,8 +31,8 @@ oauth2.init_app(
         app,
         scopes=['email', 'profile'],
         authorize_callback=_request_user_info,
-        client_id='540065309258-l47khtteovcjo07i65gbhp85tf83uqec.apps.googleusercontent.com',
-        client_secret='Uzka-as21BkyzH53OeYnfniW')
+        client_id='264579276028-vtsusrh6qr9o11jgo7bmc5ko61m7egpo.apps.googleusercontent.com',
+        client_secret='ak-EbmpzEVBF7jT_5_2qjCjb')
 
 @app.route("/")
 def slash():

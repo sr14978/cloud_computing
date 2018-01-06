@@ -3,7 +3,7 @@ from google.cloud import storage
 from werkzeug import secure_filename
 
 client = storage.Client(project='cloudcomputingcompiler')
-bucket = client.bucket('cloudcomputingcompilercode')
+bucket = client.bucket('cloudcomputingcompilercodecontainer')
 
 def upload_file(file, safe_filename):
     blob = bucket.blob(safe_filename)

@@ -12,12 +12,12 @@
 
 \title{Parallel Compilation in the Cloud}
 
-\author{\IEEEauthorblockN{Jamie Willis}
+\author{\IEEEauthorblockN{Jamie Willis (13353)}
 \IEEEauthorblockA{\textit{School of Computer Science} \\
 \textit{University of Bristol}\\
 jw14896@bristol.ac.uk}
 \and
-\IEEEauthorblockN{Samuel Russell}
+\IEEEauthorblockN{Samuel Russell (14591)}
 \IEEEauthorblockA{\textit{School of Computer Science} \\
 \textit{University of Bristol}\\
 sr14978@bristol.ac.uk}
@@ -154,23 +154,25 @@ improves the latency of resource retrieval greatly.
 To store information about users we have used Google's cloud
 Datastore\cite{datastore} offering. All micro-services communicate with the
 Datastore through the Google's client API. Datastore is a non-relational
-database so structured queries such as table joins are not available. However,
-it is great for storing simple variable types as this means is able to be
-massively scalable and deliver high performance since it uses a distributed
-architecture, and scales automatically. However, there are limits to parallel accesses as many access to data on the same data group can lead to contention. Distributed database's have need to
-consider consistency and Datastore uses strong consistency when querying keys
-but eventual consistency for other content based queries. This is fine for our
-application's needs since it is not critical data. Like every good database, it guarantees atomic
-transactions and also it encrypts all data written to disk.
+database: structured queries like table joins are not available. However,
+it is great for storing simple variable types as it is
+massively scalable and delivers high performance due to a distributed
+architecture, and scales automatically. However, there are limits to parallel
+accesses as many access to data on the same data group can lead to contention.
+Distributed databases need to consider consistency and Datastore uses
+strong consistency when querying keys but eventual consistency for other
+content-based queries. This is fine for our application's needs since it is not
+critical data. Like every good database, it guarantees atomic transactions and
+encrypts all data written to disk.
 
 All files are stored in Google's Cloud Object storage offering\cite{storage}
-that provides a unified place for data across the micro-services. Object
-storage differs from other storage architectures like hierarchical file-systems
-in that it consists of an unstructured collection of variable sized object
-blobs each retrievable by a globally unique identifier (in Google Cloud storage
-you can create folders, but they are just abstractions on top of globally
-unique names). We created our own object storage bucket to store our zip files,
-source code, object code and compiler messages.
+which provides a unified place for data across the micro-services. Object
+storage differs from other storage architectures like hierarchical file-systems;
+it consists of an unstructured collection of variable sized object blobs each
+retrievable by a globally unique identifier - in Google Cloud storage you can
+create folders, but they are just abstractions over globally unique names.
+We created our own object storage bucket to store our zip files, source code, 
+object code and compiler messages.
 
 The API service is decoupled from the worker service using a Google's PubSub
 queue\cite{pubsub}. We use a push queue that instigates the jobs by submitting
@@ -180,27 +182,27 @@ robustness since it guarantees \emph{at-least-once} messaging by re-scheduling
 failed jobs.
 
 We could have also used Google's MemCache\cite{mem} offering which provides a
-much faster and local but smaller storage option to the web servers. Inside the
-memory cache, data is held in RAM and so when used to store frequently accessed
-data it can improve performance and therefore cost. However, care must be taken
-to decide what to put in to the cache and on the free tier there are no
-guarantees about the data still being there when you next need it since it may
-be cleared at any time to make space for someone else's use. This means it is
-only really appropriate for static content.
+much faster, local but smaller storage option to the web servers. Inside the
+memory cache, data is held in RAM and so, when used to store frequently accessed
+data, it can improve performance and therefore cost. However, care must be taken
+to decide what to put into the cache and on the free tier there are no
+guarantees about the data still being there when you next need it; it may
+be cleared at any time to make space for another application. This means
+it is only really appropriate for static content.
 
-We included user accounts on the application so users can check up on
-compilations they have done previously and download the resulting executables.
-For this we integrated with Google's identity API using OAuth2. To do this, we
-used a flask plugin called UserOAuth2\cite{oauth} to redirect to Google's
-authentication page and handle the response token by looking up the user
-details on Google+ such as name and user id number.
+We included user accounts on the application so users can check up on previous
+compilations and download the resulting executables. For this, we integrated
+with Google's identity API using \texttt{OAuth2}; we used a flask
+plugin called \texttt{UserOAuth2}\cite{oauth} to redirect to Google's
+authentication page and handle the response token by looking up the user details 
+on Google+, such as name and user id number.
 
 After a user has logged on, we want to store their credentials so that we can
-customise their experience. We found the simplest way to do this in a
-distributed system is to store the them in the browser of the user. This means
-that they will get sent with each request identifying who it has come from.
-Flask's session plug-in makes this easy and secure by encrypting the
-information before it is sent and decrypting it again on receipt.
+customise their experience. We found the simplest way to achieve this in a
+distributed system is to store them in the user's browser; they will get sent
+with each request identifying who it has come from. Flask's session plug-in
+makes this easy and secure by encrypting the information before it is sent and
+decrypting it again on receipt.
 
 \section{Scalability}
 
@@ -297,8 +299,8 @@ projects - the performance will obviously not outperform a serial approach for
 small projects, with overhead for communication.
 The application is available online at
 \textbf{\url{https://cloudcomputingcompliler.appspot.com}} [sic].
-This paper is bundled with an example zip file you can submit to the app. You
-should use G++ with the C++ 11 standard. In addition you are required to provide
+The application is bundled with an example zip file you can submit to the app.
+You should use G++ with the C++ 11 standard. In addition you are required to provide
 the following linker flag: \texttt{-pthread}. It is recommended to also use
 \texttt{-O3 -pedantic -Wall} as the compiler flags. The executable returned can
 be ran, if desired, on a Linux terminal with \texttt{./exename

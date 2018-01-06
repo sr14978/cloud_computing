@@ -256,13 +256,13 @@ scaling between one and sixteen instances based on the CPU utilisation to
 provide a capable but responsive system.
 \end{itemize}
 
-You can also host multiple versions of software and do incremental feature
-rollouts by using traffic splitting to gradually upgrade the service with
+Additionally, you can host multiple versions of the software and do incremental
+feature rollouts by using traffic splitting to gradually upgrade the service with
 minimal disruption.
 
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}
-A severe current limitation of our system is that it only supported Linux
+A current severe limitation of our system is that it only supports Linux
 compilation, since the server we are provided with is a Linux server. In order
 to compile for Windows and other platforms, we would need to compile our own
 cross-compilers for GCC that run on Linux but target other platforms, which is
@@ -271,22 +271,22 @@ requirement.
 \subsection{More Languages}
 Currently, only C and C++ are supported languages. However, it would be possible
 in future work to include more languages that suffer from the same long
-compilation times. The limitation would be on what compilers are installed on
+compilation times. The limitation would what compilers are installed on
 the server, and whether or not we could install new ones.
 \subsection{Non-nested Zip Structure}
-A current limitation with the design is the requirement of a flattened zip
-structure for the uploaded source code. Ideally in future the app would be able
-to support any folder structure inside the zip and create the appropriate
-structure in the blob storage. This should not be too difficult to achieve, but
-we decided it does not add much to the application given that the main focus is
-on the parallel aspect.
+A current limitation with our design is the requirement of a flattened zip
+structure for the uploaded source code. Ideally, in future, the app would be
+able to support any folder structure inside the zip and create the appropriate
+structure in the object storage. This should not be too difficult to achieve,
+but we decided it does not add much value to the application given that the main
+focus is on the scalable parallelism aspect.
 \subsection{New Compilers}
 The current implementation of this application only allows us to make use of GCC
 and G++ compilers. Ideally, we would also like to support the MSVC compiler and
 Clang. The former is an example of a compiler that already performs
 multi-threaded compilation by instantiating itself multiple times \cite{MSVC},
-so wouldn't benefit from running it multiple times in parallel as suggested in
-the introduction.
+so would not benefit from running it multiple times in parallel, which makes it
+well suited to distributed compilation.
 \section{Conclusion}
 In this paper we have presented a means to compile large projects whilst
 leveraging the scalable power of a cloud platform using micro-services. We have

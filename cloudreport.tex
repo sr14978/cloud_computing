@@ -198,11 +198,11 @@ authentication page and handle the response token by looking up the user details
 on Google+, such as name and user id number.
 
 After a user has logged on, we want to store their credentials so that we can
-customise their experience. We found the simplest way to do this in a
-distributed system is to store the them in the browser of the user. This means
-that they will get sent with each request identifying who it has come from.
-Flask's session plug-in makes this easy and secure by encrypting the
-information before it is sent and decrypting it again on receipt.
+customise their experience. We found the simplest way to achieve this in a
+distributed system is to store them in the user's browser; they will get sent
+with each request identifying who it has come from. Flask's session plug-in
+makes this easy and secure by encrypting the information before it is sent and
+decrypting it again on receipt.
 
 \section{Scalability}
 

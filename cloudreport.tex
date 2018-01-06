@@ -113,37 +113,33 @@ managed separately by Google App Engine. We used this platform-as-a-service
 (PaaS) offering to take advantage of Google Flex\cite{GAE} environment which
 automatically scales instances and load balances requests. In the flex mode of GAE,
 server instances run inside containers which are created from the uploaded
-source code.  
-%hmm. I don't like this sentence...
-Using containers means that the initial system set up can
-take much longer than just stating up the server code as an docker image has to be built, but provides a clean way to
-manage the running instances and later creation of clone instances is just as
-fast.
-% SAM: This seems very out of place - should it just be removed? 
-%In the App Engine you cannot use the instance's filesystem to store data
-%since they are volatile to change.
+source code. Our use of containers requires that a docker image is constructed,
+which can take much longer than executing the server code on its own, but provides a clean
+way of managing the running instances and, later, creation of cloned instances
+is much faster.
 
-Each micro-service is written in Python using the Flask web framework \cite{Flask}:
+There are three micro-services, each of which is written in Python using the
+Flask web framework \cite{Flask}:
 \begin{itemize}
-\item A Front end service which provides access to users though web
+\item A Front-end service which provides access to users to web
 pages including static and dynamic content.
 
 \item An API service, which provides
-access to all the functions through a RESTful interface.
+access to all the functionality through a RESTful interface.
 
 \item The third micro-service conducts a \emph{map-then-reduce} process to
 compile the given source code and store it to object storage.
 \end{itemize}
 
-We could have created three
-sub services to operate the three actions needed but we opted to use one
-micro-service since this means the workers are more flexible to complete any of
-the actions and so fewer instances will be needed for light loads.
+We could have created three micro-services to perform the third operation - an
+individual unzip, compile and link process - however, we opted to use one
+micro-service for all three since this means the workers are more flexible; they can complete any
+of the actions so fewer instances will be needed for light loads.
 
-To create a micro-service, a \texttt{yaml} file must be submitted defining the
-how GAE should respond to requests and giving details of the runtime of your
-app instance. It also states the command to start up the server, for which we
-used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up
+To create a micro-service, a \texttt{yaml} file must be submitted defining
+how GAE should respond to requests and giving details of the runtime of the
+app instance. It also starts the command to start up the server which utilised
+Gunicorn\cite{gunicorn} as tbe Web Server Gateway Interface to serve up
 the web interface. Our folder structure also included a template directory for
 serving up dynamic pages and a static directory for the static content like
 style sheets. We also uploaded a \texttt{requirements.txt} file to tell the

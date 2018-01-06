@@ -2,7 +2,7 @@ import datetime
 from google.cloud import storage
 from werkzeug import secure_filename
 
-client = storage.Client(project='cloudcomputingcompliler')
+client = storage.Client(project='cloudcomputingcompiler')
 bucket = client.bucket('cloudcomputingcompilercode')
 
 def upload_file(file, safe_filename):

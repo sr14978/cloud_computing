@@ -44,7 +44,8 @@ compile multiple files at once by using scripts that launch many compiler
 instances in separate threads. This is a good improvement on the compilation
 process, but it is limited by the number of processor cores you have.
 Additionally, if your compiler \emph{is} multi-threaded \cite{rust}, this will
-place a large amount of strain on the system.
+place a large amount of strain on the system or prove ineffective, depending on
+the type of parallelism it employs.
 
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how

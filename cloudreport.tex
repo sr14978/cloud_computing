@@ -108,11 +108,9 @@ messages so they are available for the user.
     \label{fig:underlying}
 \end{figure}
 
-Our solution consists of a collection of independent micro services, each
-managed separately by Google App engine. We used this platform-as-a-service
-(PaaS) offering to take advantage of Google Flex environment which
-automatically scales and load balances \cite{GAE}. Each micro-service is
-written in Python using the Flask web framework \cite{Flask}:
+Our solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances \cite{GAE}. In the flex mode of GAE, server instances run inside containers which are created from the uploaded source code. This creation means that the initial setting up of a system can take much longer as an docker image has to be build but provides a clean way to manage the running instances and later creation of clone instances is just as fast. In the App Engine you cannot use the instances file-system to store data since they are volatile to change.
+
+Each micro-service is written in Python using the Flask web framework \cite{Flask}:
 
 \begin{itemize}
 \item A Front end service which provides access to users though web
@@ -181,6 +179,10 @@ to decide what to put in to the cache and on the free tier there are no
 guarantees about the data still being there when you next need it since it may
 be cleared at any time to make space for someone else's use. This means it is
 only really appropriate for static content.
+
+We included user accounts on the application so users can check up on compilations they have done previously and download the resulting executables. For this we integrated with Google's identity API using OAuth2. To do this, we used a flask plugin called UserOAuth2\cite{oauth} to redirect to Google's authentication page and handle the response token by looking up the user details on Google Plus such as name and user id number. 
+
+After a user has logged on, we want to store their credentials so that we can customise their experience. We found the simplest way to do this in a distributed system is to store the them in the browser of the user. This means that they will get sent with each request identifying who it has come from. Flask's session plug-in makes this easy and secure by encrypting the information before it is sent and decrypting it again on receipt.
 
 \section{Scalability}
 
@@ -317,7 +319,11 @@ hello\_world.stdc}, a sample program included with the source code.
 
 \bibitem{mem}
    Effective MemCache
-    \url{https://cloud.google.com/appengine/articles/scaling/memcache/}
+    \url{https://cloud.google.com/appengine/articles/scaling/memcache/} 
+
+\bibitem{oauth}
+   OAth2 Flask extension
+    \url{http://oauth2client.readthedocs.io/en/latest/source/oauth2client.contrib.flask_util.html}
 
 \bibitem{MSVC}
  	Multi-process compilation using \texttt{-MP} MSVC

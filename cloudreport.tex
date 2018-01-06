@@ -110,8 +110,8 @@ messages so they are available for the user.
 
 Our solution consists of a collection of independent micro services, each
 managed separately by Google App Engine. We used this platform-as-a-service
-(PaaS) offering to take advantage of Google Flex environment which
-automatically scales and load balances \cite{GAE}. In the flex mode of GAE,
+(PaaS) offering to take advantage of Google Flex\cite{GAE} environment which
+automatically scales instances and load balances requests. In the flex mode of GAE,
 server instances run inside containers which are created from the uploaded
 source code. Our use of containers requires that a docker image is constructed,
 which can take much longer than executing the server code on its own, but provides a clean
@@ -162,7 +162,7 @@ accesses as many access to data on the same data group can lead to contention.
 Distributed databases need to consider consistency and Datastore uses
 strong consistency when querying keys but eventual consistency for other
 content-based queries. This is fine for our application's needs since it is not
-critical data. Like every good databse, it guarantees atomic transactions and
+critical data. Like every good database, it guarantees atomic transactions and
 encrypts all data written to disk.
 
 All files are stored in Google's Cloud Object storage offering\cite{storage}

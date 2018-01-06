@@ -61,7 +61,7 @@ in parallel if the hardware allows it.
 \subsection{Overall Procedure}
 \begin{figure}[ht] % ht
     \centering
-    \includegraphics[width=3.2in]{WorkArchitecture.png}
+    \includegraphics[width=2.5in]{WorkArchitecture.png}
     \caption{Workflow chart}
     \label{fig:overview}
 \end{figure}
@@ -75,10 +75,10 @@ Then, in the cloud, the zip file is tagged and uploaded to object storage, a
 task is submitted to the queue to initiate the compilation and the tag is
 returned to the user app for retrieval of the results.
 
-%fragment
-Upon completion of the compilation, the results file and executable is uploaded
-to object storage and becomes available for the app to download along with the
-warnings presented in browser.
+Upon completion of the compilation, both the results file and executable are
+uploaded to object storage and they become available for the app to
+download with the warnings presented in browser. If compilation failed, errors
+are presented to the user instead.
 
 The compilation process consists of three steps:
 Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over

@@ -31,7 +31,7 @@ or C++ projects in parallel, utilising Google App Engine (GAE). The application
 can compile projects by allowing a user to upload a flattened zip with the
 source code and headers. It is available online at
 
-\noindent\url{https://cloudcomputingcompliler.appspot.com} [sic].
+\noindent\url{https://cloudcomputingcompiler.appspot.com}.
 
 \end{abstract}
 \section{Introduction}
@@ -205,13 +205,24 @@ makes this easy and secure by encrypting the information before it is sent and
 decrypting it again on receipt.
 
 \section{Scalability}
-
 Vertical scaling is increasing the size of you compute devices to get better
 performance. This normally means the software architecture does not need to be
 changed, however, there are limits to the size of servers and also, using many
 smaller commodity servers is cheaper due to efficiencies of scale. Therefore,
 the current trend is to use the horizontal scaling of using more machines to
 satisfy high demand.
+
+Howver, it is worth discussing how we \emph{could} have implemented vertical
+scaling and why it is likely not advantageous with respect to further
+enhancements we could make. Vertical scaling can be realised by making use of
+more resources on each of our worker threads. This is trivially achievable with
+our application by shipping $n$ source files to each worker where $n$ is the
+number of cores on the machine. Then we would spawn off $n$ instances of the
+compiler. This was the approach discussed in the introduction. However, this is
+not a suitable idea for two reasons: it falls short with multi-threaded
+compilers as discussed in the introduction, which conflicts with adding new
+compilers; it relies on the servers provided to us being multi-core, which is
+less likely to be available to us in a commodity-heavy server infrastructure.
 
 There are three axis of the horizontal scaling cube, and Google App Engine
 implements them all.
@@ -275,19 +286,6 @@ Clang. The former is an example of a compiler that already performs
 multi-threaded compilation by instantiating itself multiple times \cite{MSVC},
 so wouldn't benefit from running it multiple times in parallel as suggested in
 the introduction.
-\subsection{Vertical Scaling}
-Further to the previous discussion on what vertical scaling is, it is worth
-discussing how we \emph{could} have implemented it and why it is likely not
-advantageous with respect to further enhancements we could make. Vertical
-scaling can be realised by making use of more resources on each of our worker
-threads. This is trivially achievable with our application by shipping $n$
-source files to each worker where $n$ is the number of cores on the machine.
-Then we would spawn off $n$ instances of the compiler. This was the approach
-discussed in the introduction. However, this is not a suitable idea for two
-reasons: it falls short with multi-threaded compilers as
-discussed in the introduction, which conflicts with adding new compilers; it
-relies on the servers provided to us being multi-core, which is less likely to
-be available to us in a commodity-heavy server infrastructure.
 \section{Conclusion}
 In this paper we have presented a means to compile large projects whilst
 leveraging the scalable power of a cloud platform using micro-services. We have
@@ -298,12 +296,12 @@ the performance observed with the naive multi-threaded approach for large
 projects - the performance will obviously not outperform a serial approach for
 small projects, with overhead for communication.
 The application is available online at
-\textbf{\url{https://cloudcomputingcompliler.appspot.com}} [sic].
+\textbf{\url{https://cloudcomputingcompiler.appspot.com}}.
 The application is bundled with an example zip file you can submit to the app.
 You should use G++ with the C++ 11 standard. In addition you are required to provide
 the following linker flag: \texttt{-pthread}. It is recommended to also use
 \texttt{-O3 -pedantic -Wall} as the compiler flags. The executable returned can
-be ran, if desired, on a Linux terminal with \texttt{./exename
+be ran, if desired, on a Linux terminal with \texttt{./a.out
 hello\_world.stdc}, a sample program included with the source code.
 
 \begin{thebibliography}{00}

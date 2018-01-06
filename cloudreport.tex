@@ -108,7 +108,16 @@ messages so they are available for the user.
     \label{fig:underlying}
 \end{figure}
 
-Our solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances \cite{GAE}. In the flex mode of GAE, server instances run inside containers which are created from the uploaded source code. This creation means that the initial setting up of a system can take much longer as an docker image has to be build but provides a clean way to manage the running instances and later creation of clone instances is just as fast. In the App Engine you cannot use the instances file-system to store data since they are volatile to change.
+Our solution consists of a collection of independent micro services, each
+managed separately by Google App Engine. We used this platform-as-a-service
+(PaaS) offering to take advantage of Google Flex environment which
+automatically scales and load balances \cite{GAE}. In the flex mode of GAE,
+server instances run inside containers which are created from the uploaded
+source code. This creation means that the initial setting up of a system can
+take much longer as an docker image has to be build but provides a clean way to
+manage the running instances and later creation of clone instances is just as
+fast. In the App Engine you cannot use the instances file-system to store data
+since they are volatile to change.
 
 Each micro-service is written in Python using the Flask web framework \cite{Flask}:
 

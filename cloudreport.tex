@@ -113,7 +113,7 @@ managed separately by Google App Engine. We used this platform-as-a-service
 (PaaS) offering to take advantage of Google Flex\cite{GAE} environment which
 automatically scales instances and load balances requests. In the flex mode of GAE,
 server instances run inside containers which are created from the uploaded
-source code. Our use of containers requires that a docker image is constructed,
+source code. This use of containers requires that a docker image is constructed,
 which can take much longer than executing the server code on its own, but provides a clean
 way of managing the running instances and, later, creation of cloned instances
 is much faster.
@@ -121,7 +121,7 @@ is much faster.
 There are three micro-services, each of which is written in Python using the
 Flask web framework \cite{Flask}:
 \begin{itemize}
-\item A Front-end service which provides access to users to web
+\item A Front-end service which provides users access to web
 pages including static and dynamic content.
 
 \item An API service, which provides
@@ -138,8 +138,8 @@ of the actions so fewer instances will be needed for light loads.
 
 To create a micro-service, a \texttt{yaml} file must be submitted defining
 how GAE should respond to requests and giving details of the runtime of the
-app instance. It also starts the command to start up the server which utilised
-Gunicorn\cite{gunicorn} as tbe Web Server Gateway Interface to serve up
+app instance. It also states the start up command for which we utilised
+Gunicorn\cite{gunicorn} as the Web Server Gateway Interface to serve up
 the web interface. Our folder structure also included a template directory for
 serving up dynamic pages and a static directory for the static content like
 style sheets. We also uploaded a \texttt{requirements.txt} file to tell the
@@ -158,11 +158,10 @@ database: structured queries like table joins are not available. However,
 it is great for storing simple variable types as it is
 massively scalable and delivers high performance due to a distributed
 architecture, and scales automatically. However, there are limits to parallel
-accesses as many access to data on the same data group can lead to contention.
+accesses as many accesses to data on the same data group can lead to contention.
 Distributed databases need to consider consistency and Datastore uses
 strong consistency when querying keys but eventual consistency for other
-content-based queries. This is fine for our application's needs since it is not
-critical data. Like every good database, it guarantees atomic transactions and
+content-based queries. This is fine for our application's needs since it is not used for critical data. Like every good database, it guarantees atomic transactions and
 encrypts all data written to disk.
 
 All files are stored in Google's Cloud Object storage offering\cite{storage}

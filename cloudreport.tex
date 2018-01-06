@@ -115,18 +115,20 @@ access to all the functions through a RESTful interface.
 compile the given source code and store it to object storage.
 \end{itemize}
 
-To create a micro-service, a \texttt{yaml} file must be submitted defining the how GAE should respond to requests and giving details of the runtime of your app instance. It also states the command to start up the server, for which we used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up the web interface. Our folder structure also included a template directory for serving up dynamic pages and a static directory for the static content like style sheets.
-
 We could have created three
 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
 
+To create a micro-service, a \texttt{yaml} file must be submitted defining the how GAE should respond to requests and giving details of the runtime of your app instance. It also states the command to start up the server, for which we used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up the web interface. Our folder structure also included a template directory for serving up dynamic pages and a static directory for the static content like style sheets. We also uploaded a \texttt{requirements.txt} file to tell the container build script to pull in the appropriate libraries.
+
 The static content to be served to the user is cached in a geographically distributed fashion on Google's Content Management System. This did cause some issues in testing since when uploading a new version, the old code was still present in the cache so the content did not update. However, in production this improves the latency of resource retrieval greatly.
 
-To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
+To store information about users we have used Google's cloud Datastore\cite{datastore} offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
 
-All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages.
+All files are stored in Google's Cloud Object storage offering\cite{storage} that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages.
 
-The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service. It can protect the workers from large surges in demand using flow control dynamic rate limiting. Also, it improves robustness since it guarantees at-least-once messaging by re-scheduling failed jobs.
+The API service is decoupled from the worker service using a Google's PubSub queue\cite{pubsub}. We use a push queue that instigates the jobs by submitting POST requests to the worker service. It can protect the workers from large surges in demand using flow control dynamic rate limiting. Also, it improves robustness since it guarantees at-least-once messaging by re-scheduling failed jobs.
+
+We could have also used Google's MemCache\cite{mem} offering which provides a much faster and local but smaller storage option to the web servers. Inside the memory cache, data is held in RAM and so when used to store frequently accessed data it can improve performance and therefore cost. However, care must be taken to decide what to put in to the cache and on the free tier there are no guarantees about the data still being there when you next need it since it may be cleared at any time to make space for someone else's use. This means it is only really appropriate for static content.
 
 \section{Scalability}
 
@@ -177,7 +179,7 @@ on the parallel aspect.
 The current implementation of this application only allows us to make use of GCC
 and G++ compilers. Ideally, we would also like to support the MSVC compiler and
 Clang. The former is an example of a compiler that already performs
-multi-threaded compilation by instantiating itself multiple times \cite{MSCV},
+multi-threaded compilation by instantiating itself multiple times \cite{MSVC},
 so wouldn't benefit from running it multiple times in parallel as suggested in the
 introduction.
 \subsection{Vertical Scaling}
@@ -210,9 +212,6 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
 \texttt{-O3 -pedantic -Wall} as the compiler flags.
 
 \begin{thebibliography}{00}
-\bibitem{gunicorn}
-    Gunicorn: a Python WSGI HTTP Server for UNIX
-    \url{http://gunicorn.org/}
 
 \bibitem{GCC}
     GNU C Compiler
@@ -231,9 +230,29 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
     Flask: a web microframework for Python
     \url{http://flask.pocoo.org/}
 
+\bibitem{gunicorn}
+    Gunicorn: a Python WSGI HTTP Server for UNIX
+    \url{http://gunicorn.org/}
+
+\bibitem{datastore}
+    Google Cloud Datastore: a Highly Scalable NoSQL Database
+    \url{https://cloud.google.com/datastore/}
+
+\bibitem{storage}
+    Google Cloud Storage: a Unified Object Storage
+    \url{https://cloud.google.com/storage/}
+
+\bibitem{pubsub}
+   PubSub: Google Task Queue
+    \url{https://cloud.google.com/pubsub/}
+
+\bibitem{mem}
+   Effective MemCache
+    \url{https://cloud.google.com/appengine/articles/scaling/memcache/}
+
 \bibitem{MSVC}
  	Multi-process compilation using -MP MSVC
  	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}
-\end{thebibliography}
 
+\end{thebibliography}
 \end{document}

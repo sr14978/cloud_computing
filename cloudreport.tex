@@ -30,7 +30,8 @@ We present an application based in the cloud allowing users to compile large C
 or C++ projects in parallel, utilising Google App Engine. The application can
 compile projects by allowing a user to upload a flattened zip with the source
 code and headers. It is available online at
-\url{https://cloudcomputingcompliler.appspot.com}.
+
+\noindent[\url{https://cloudcomputingcompliler.appspot.com}].
 \end{abstract}
 \section{Introduction}
 In industry, very large C or C++ projects are common. These can take a very long time to compile using GCC \cite{GCC}, and this is a
@@ -104,6 +105,8 @@ access to all the functions through a RESTful interface.
 \item The third micro-service conducts a \emph{map-then-reduce} process to
 compile the given source code and store it to object storage. 
 \end{itemize}
+
+To create a micro-service, a \texttt{yaml} file must be submitted defining the how GAE should respond to requests and giving details of the runtime of your app instance. It also states the command to start up the server, for which we used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up the web interface. Our folder structure also included a template directory for serving up dynamic pages and a static directory for the static content like style sheets.
 
 We could have created three
 sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
@@ -179,6 +182,10 @@ is available online at
 This paper is bundled with an example zip file you can submit to the app.
 
 \begin{thebibliography}{00}
+\bibitem{gunicorn}
+    Gunicorn: a Python WSGI HTTP Server for UNIX
+    \url{http://gunicorn.org/}
+
 \bibitem{GCC}
     GNU C Compiler
     \url{https://gcc.gnu.org/}

@@ -27,18 +27,19 @@ sr14978@bristol.ac.uk}
 
 \begin{abstract}
 We present an application based in the cloud allowing users to compile large C
-or C++ projects in parallel, utilising Google App Engine. The application can
-compile projects by allowing a user to upload a flattened zip with the source
-code and headers. It is available online at
+or C++ projects in parallel, utilising Google App Engine (GAE). The application
+can compile projects by allowing a user to upload a flattened zip with the
+source code and headers. It is available online at
 
 \noindent\url{https://cloudcomputingcompliler.appspot.com} [sic].
 
 \end{abstract}
 \section{Introduction}
-In industry, very large C or C++ projects are common. These can take a very long time to compile using GCC \cite{GCC}, and this is a
-large waste of time for developers. Many compilers are not multi-threaded,
-since the process of compilation and optimisation must be done in an ordering with
-many dependencies. Despite this, however, each file in itself is completely
+In industry, very large C or C++ projects are common. These can take a very
+long time to compile using GCC \cite{GCC}, and this is a
+large waste of time for developers. Many compilers are not multi-threaded - the
+process of compilation and optimisation must be done in an ordering
+with many dependencies. Despite this, however, each file in itself is completely
 orthogonal to every other file (until link-time). This results in an ability to
 compile multiple files at once by using scripts that launch many compiler
 instances in separate threads. This is a good improvement on the compilation
@@ -50,9 +51,9 @@ the type of parallelism it employs.
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how
 big the files are. This can prove to be a large advantage for much larger
-projects, that might otherwise take over half an hour to compile! This technique
+projects, that might otherwise take over half an hour to compile. This technique
 also allows us to leverage multi-threaded compilers whilst also compiling files
-in parallel.
+in parallel if the hardware allows it.
 
 % potentially add in more information?
 
@@ -65,9 +66,13 @@ in parallel.
     \label{fig:overview}
 \end{figure}
 
-A user visits the website provided by the front end service. They send a zip file along with the corresponding compiler and linker flags to the API using the webapp.
+A user visits the website provided by the front end service. They send a zip
+file along with the corresponding compiler and linker flags to the API using
+the webapp.
 
-Then, in the cloud, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
+Then, in the cloud, the zip file is tagged and uploaded to object storage, a
+task is submitted to the queue to initiate the compilation and the tag is
+returned to the user app for retrieval of the results.
 
 %fragment
 Upon completion of the compilation, the results file and executable is uploaded
@@ -107,7 +112,7 @@ pages including static and dynamic content.
 access to all the functions through a RESTful interface.
 
 \item The third micro-service conducts a \emph{map-then-reduce} process to
-compile the given source code and store it to object storage. 
+compile the given source code and store it to object storage.
 \end{itemize}
 
 To create a micro-service, a \texttt{yaml} file must be submitted defining the how GAE should respond to requests and giving details of the runtime of your app instance. It also states the command to start up the server, for which we used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up the web interface. Our folder structure also included a template directory for serving up dynamic pages and a static directory for the static content like style sheets.
@@ -119,7 +124,7 @@ The static content to be served to the user is cached in a geographically distri
 
 To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
 
-All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages. 
+All files are stored in Google's Cloud Object storage offering that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages.
 
 The API service is decoupled from the worker service using a Google's PubSub queue. We use a push queue that instigates the jobs by submitting POST requests to the worker service. It can protect the workers from large surges in demand using flow control dynamic rate limiting. Also, it improves robustness since it guarantees at-least-once messaging by re-scheduling failed jobs.
 
@@ -132,7 +137,7 @@ implements them all.
 
 The first way of scaling out is functional decomposition, which we have done by splitting our system in to three micro-services. This creates good software maintainability since each part of the process is decoupled from the next and so has clear, well-defined interaction points.
 
-The second is data-partitioning, which can be geographical or purely over separate user demographics. Since, within our application users do not share data and usually with remain in one location for sustained periods assigning resources in close proximity to them will increase performance because for instance caches become more efficient. GAE, will create multiple server instances from our template in different data centres and can route traffic to the most applicable one. 
+The second is data-partitioning, which can be geographical or purely over separate user demographics. Since, within our application users do not share data and usually with remain in one location for sustained periods assigning resources in close proximity to them will increase performance because for instance caches become more efficient. GAE, will create multiple server instances from our template in different data centres and can route traffic to the most applicable one.
 
 Finally, within a specific feature and geographic server group there can be
 instance replication to serve the load. This replicated instance group can also
@@ -212,7 +217,7 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
 \bibitem{GCC}
     GNU C Compiler
     \url{https://gcc.gnu.org/}
-    
+
 \bibitem{rust}
     Rust Compiler - Parallel Code Generation
     \url{https://internals.rust-lang.org/t/default-settings-for-parallel-codegen/519}
@@ -225,10 +230,10 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
 \bibitem{Flask}
     Flask: a web microframework for Python
     \url{http://flask.pocoo.org/}
-    
+
 \bibitem{MSVC}
  	Multi-process compilation using -MP MSVC
- 	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}    
+ 	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}
 \end{thebibliography}
 
 \end{document}

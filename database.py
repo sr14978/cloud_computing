@@ -2,7 +2,7 @@
 from google.cloud import datastore
 
 def get_client():
-    return datastore.Client('cloudcomputingcompliler')
+    return datastore.Client('cloudcomputingcompiler')
 
 def update(data, id=None):
     client = get_client()

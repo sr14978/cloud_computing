@@ -137,8 +137,8 @@ micro-service for all three since this means the workers are more flexible; they
 of the actions so fewer instances will be needed for light loads.
 
 To create a micro-service, a \texttt{yaml} file must be submitted defining
-how GAE should respond to requests and giving details of the runtime of the
-app instance. It also states the start up command for which we utilised
+how GAE should respond to requests, giving details of the runtime of the
+app instance and defining the start up command. We utilised
 Gunicorn\cite{gunicorn} as the Web Server Gateway Interface to serve up
 the web interface. Our folder structure also included a template directory for
 serving up dynamic pages and a static directory for the static content like

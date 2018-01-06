@@ -43,8 +43,9 @@ orthogonal to every other file (until link-time). This results in an ability to
 compile multiple files at once by using scripts that launch many compiler
 instances in separate threads. This is a good improvement on the compilation
 process, but it is limited by the number of processor cores you have.
-Additionally, if your compiler \emph{is} multi-threaded, this will place a large
-amount of strain on the system.
+Additionally, if your compiler \emph{is} multi-threaded \cite{rust}, this will
+place a large amount of strain on the system or prove ineffective, depending on
+the type of parallelism it employs.
 
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how
@@ -116,7 +117,7 @@ To create a micro-service, a \texttt{yaml} file must be submitted defining the h
 
 The static content to be served to the user is cached in a geographically distributed fashion on Google's Content Management System. This did cause some issues in testing since when uploading a new version, the old code was still present in the cache so the content did not update. However, in production this improves the latency of resource retrieval greatly.
 
-To store information about users we have used Google's cloud Datastore offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
+To store information about users we have used Google's cloud Datastore\cite{datastore} offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
 
 All files are stored in Google's Cloud Object storage offering\cite{storage} that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages. 
 
@@ -172,9 +173,10 @@ on the parallel aspect.
 \subsection{New Compilers}
 The current implementation of this application only allows us to make use of GCC
 and G++ compilers. Ideally, we would also like to support the MSVC compiler and
-Clang. The former is an example of a compiler that indeed runs multi-threaded,
-which would therefore not benefit from simple multi-threaded command line compilation
-and is well suited to cloud compilation.
+Clang. The former is an example of a compiler that already performs
+multi-threaded compilation by instantiating itself multiple times \cite{MSVC},
+so wouldn't benefit from running it multiple times in parallel as suggested in the
+introduction.
 \subsection{Vertical Scaling}
 Further to the previous discussion on what vertical scaling is, it is worth
 discussing how we \emph{could} have implemented it and why it is likely not
@@ -199,13 +201,21 @@ projects - the performance will obviously not outperform a serial approach for
 small projects, with overhead for communication.
 The application is available online at
 \textbf{\url{https://cloudcomputingcompliler.appspot.com}} [sic].
-This paper is bundled with an example zip file you can submit to the app.
+This paper is bundled with an example zip file you can submit to the app. You
+should use G++ with the C++ 11 standard. In addition you are required to provide
+the following linker flag: \texttt{-pthread}. It is recommended to also use
+\texttt{-O3 -pedantic -Wall} as the compiler flags.
 
 \begin{thebibliography}{00}
 
 \bibitem{GCC}
     GNU C Compiler
     \url{https://gcc.gnu.org/}
+    
+\bibitem{rust}
+    Rust Compiler - Parallel Code Generation
+    \url{https://internals.rust-lang.org/t/default-settings-for-parallel-codegen/519}
+
 
 \bibitem{GAE}
     Google App Engine: A PaaS offering auto scaling instances
@@ -213,7 +223,7 @@ This paper is bundled with an example zip file you can submit to the app.
 
 \bibitem{Flask}
     Flask: a web microframework for Python
-    \url{http://flask.pocoo.org/}
+    \url{http://flask.pocoo.org/} 
 
 \bibitem{gunicorn}
     Gunicorn: a Python WSGI HTTP Server for UNIX
@@ -231,9 +241,13 @@ This paper is bundled with an example zip file you can submit to the app.
    PubSub: Google Task Queue
     \url{https://cloud.google.com/pubsub/}
     
-    
 \bibitem{mem}
    Effective MemCache
-    \url{https://cloud.google.com/appengine/articles/scaling/memcache/}   
+    \url{https://cloud.google.com/appengine/articles/scaling/memcache/} 
+    
+\bibitem{MSVC}
+ 	Multi-process compilation using -MP MSVC
+ 	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}
+
 \end{thebibliography}
 \end{document}

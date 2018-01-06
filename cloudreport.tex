@@ -205,8 +205,8 @@ makes this easy and secure by encrypting the information before it is sent and
 decrypting it again on receipt.
 
 \section{Scalability}
-Vertical scaling is increasing the size of you compute devices to get better
-performance. This normally means the software architecture does not need to be
+Vertical scaling involves increasing the size of your compute devices to get
+better performance. This normally means the software architecture does not need to be
 changed, however, there are limits to the size of servers and also, using many
 smaller commodity servers is cheaper due to efficiencies of scale. Therefore,
 the current trend is to use the horizontal scaling of using more machines to
@@ -217,43 +217,45 @@ scaling and why it is likely not advantageous with respect to further
 enhancements we could make. Vertical scaling can be realised by making use of
 more resources on each of our worker threads. This is trivially achievable with
 our application by shipping $n$ source files to each worker where $n$ is the
-number of cores on the machine. Then we would spawn off $n$ instances of the
-compiler. This was the approach discussed in the introduction. However, this is
-not a suitable idea for two reasons: it falls short with multi-threaded
-compilers as discussed in the introduction, which conflicts with adding new
-compilers; it relies on the servers provided to us being multi-core, which is
-less likely to be available to us in a commodity-heavy server infrastructure.
+number of cores on the machine. Then we would spawn off $n$ at once instances of
+the compiler. This was the approach discussed in the introduction. However, this is
+not a suitable idea for two reasons: it falls short with regard to
+multi-threaded compilers, which are already utilising any available extra power;
+it relies on the servers provided to us being multi-core, which is less likely
+to be available to us in the commodity-heavy infrastructure we described.
 
 There are three axis of the horizontal scaling cube, and Google App Engine
-implements them all.
+implements them all:
 
-The first way of scaling out is functional decomposition, which we have done by
-splitting our system in to three micro-services. This creates good software
-maintainability since each part of the process is decoupled from the next and
+\begin{itemize}
+\item Scaling out is achievable with functional decomposition, which we have
+done by splitting our system into three micro-services. This creates good software
+maintainability; each part of the process is decoupled from the next and
 so has clear, well-defined interaction points.
 
-The second is data-partitioning, which can be geographical or purely over
-separate user demographics. Since, within our application users do not share
-data and usually with remain in one location for sustained periods assigning
-resources in close proximity to them will increase performance because for
-instance caches become more efficient. GAE, will create multiple server
+\item The second is data-partitioning, which can be geographical or purely over
+separate user demographics. Since, within our application, users do not share
+data and usually with remain in one location for sustained periods of time,
+assigning resources in close proximity to users will increase performance as
+instance caches become more efficient. GAE will create multiple server 
 instances from our template in different data centres and can route traffic to
 the most applicable one.
 
-Finally, within a specific feature and geographic server group there can be
-instance replication to serve the load. This replicated instance group can also
+\item Finally, within a specific feature and geographic server group there can
+be instance replication to serve the load. This replicated instance group can also
 be scaled up and down to match demand as close as possible. GAE support three
 types of scaling: Manual, Basic and Automatic. In manual scaling mode, the
 service administrator or management software decides when to increase or
 decrease the number of instances. The instances have a persisting state and are
-good for long running jobs but aren't as reactive to change in load. Basic
-scaling, only creates a new instance when the application receives a request and
-turns it down again after it has finished. This is targeted towards very
-intermittent, small-scale use because it uses minimal resources but has the
-overhead of starting up new instances for new requests. Automatic scaling uses
-application metrics such as request latencies to gauge scaling demands. We use
-GAE automatic scaling between one and sixteen instances based on the CPU
-utilisation to provide a capable but responsive system.
+good for long running jobs but are not as reactive to change in load. Basic
+scaling only creates a new instance when the application receives a request and
+remove again after it has finished. This is targeted towards very intermittent,
+small-scale use as it uses minimal resources, but has the overhead of starting
+up new instances for new requests. Automatic scaling uses application metrics 
+such as request latencies to gauge scaling demands. We use GAE automatic
+scaling between one and sixteen instances based on the CPU utilisation to
+provide a capable but responsive system.
+\end{itemize}
 
 You can also host multiple versions of software and do incremental feature
 rollouts by using traffic splitting to gradually upgrade the service with

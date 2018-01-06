@@ -154,14 +154,16 @@ improves the latency of resource retrieval greatly.
 To store information about users we have used Google's cloud
 Datastore\cite{datastore} offering. All micro-services communicate with the
 Datastore through the Google's client API. Datastore is a non-relational
-database so structured queries such as table joins are not available. However,
-it is great for storing simple variable types as this means is able to be
-massively scalable and deliver high performance since it uses a distributed
-architecture, and scales automatically. However, there are limits to parallel accesses as many access to data on the same data group can lead to contention. Distributed database's have need to
-consider consistency and Datastore uses strong consistency when querying keys
-but eventual consistency for other content based queries. This is fine for our
-application's needs since it is not critical data. It also guarantees atomic
-transactions encrypts are data written to disk.
+database: structured queries like table joins are not available. However,
+it is great for storing simple variable types as it is
+massively scalable and delivers high performance due to a distributed
+architecture, and scales automatically. However, there are limits to parallel
+accesses as many access to data on the same data group can lead to contention.
+Distributed databases need to consider consistency and Datastore uses
+strong consistency when querying keys but eventual consistency for other
+content-based queries. This is fine for our application's needs since it is not
+critical data. Like every good databse, it guarantees atomic transactions and
+encrypts all data written to disk.
 
 All files are stored in Google's Cloud Object storage offering\cite{storage}
 that provides a unified place for data across the micro-services. Object

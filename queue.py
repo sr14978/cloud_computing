@@ -15,9 +15,9 @@ def get_publisher(name):
   sub_name = subscriber_client.subscription_path('cloudcomputingcompliler', name + '_jobs')
   push_config = PushConfig()
   push_config.push_endpoint = 'https://worker-dot-cloudcomputingcompliler.appspot.com/_ah/' + name + '/'
-  push_config.ack_deadline_seconds = 30
+
   try:
-    subscription = subscriber_client.create_subscription(sub_name, topic_name, push_config)
+    subscription = subscriber_client.create_subscription(sub_name, topic_name, push_config, ack_deadline_seconds=30)
   except AlreadyExists:
     pass
   

@@ -118,11 +118,12 @@ source code.
 This creation means that the initial setting up of a system can
 take much longer as an docker image has to be build but provides a clean way to
 manage the running instances and later creation of clone instances is just as
-fast. In the App Engine you cannot use the instances file-system to store data
-since they are volatile to change.
+fast.
+% SAM: This seems very out of place - should it just be removed? 
+%In the App Engine you cannot use the instance's filesystem to store data
+%since they are volatile to change.
 
 Each micro-service is written in Python using the Flask web framework \cite{Flask}:
-
 \begin{itemize}
 \item A Front end service which provides access to users though web
 pages including static and dynamic content.
@@ -196,7 +197,7 @@ compilations they have done previously and download the resulting executables.
 For this we integrated with Google's identity API using OAuth2. To do this, we
 used a flask plugin called UserOAuth2\cite{oauth} to redirect to Google's
 authentication page and handle the response token by looking up the user
-details on Google Plus such as name and user id number.
+details on Google+ such as name and user id number.
 
 After a user has logged on, we want to store their credentials so that we can
 customise their experience. We found the simplest way to do this in a

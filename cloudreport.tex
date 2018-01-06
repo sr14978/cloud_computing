@@ -110,10 +110,10 @@ messages so they are available for the user.
 
 Our solution consists of a collection of independent micro services, each
 managed separately by Google App Engine. We used this platform-as-a-service
-(PaaS) offering to take advantage of Google Flex environment which
-automatically scales and load balances \cite{GAE}. In the flex mode of GAE,
+(PaaS) offering to take advantage of Google Flex\cite{GAE} environment which
+automatically scales instances and load balances requests. In the flex mode of GAE,
 server instances run inside containers which are created from the uploaded
-source code. 
+source code.  
 %hmm. I don't like this sentence...
 Using containers means that the initial system set up can
 take much longer than just stating up the server code as an docker image has to be built, but provides a clean way to

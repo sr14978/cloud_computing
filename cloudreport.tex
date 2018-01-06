@@ -98,7 +98,7 @@ Thirdly, the linker checks that all files have been compiled then, if they were
 all successful, downloads them in to a local folder before linking them together
 in to an executable. If the objects file are not all ready it reschedules
 itself and returns. Finally, it uploads the executable or coagulated error
-messages to be available to the user.
+messages so they are available for the user.
 
 \subsection{Underlying Architecture}
 \begin{figure}[ht] % ht
@@ -170,8 +170,8 @@ The API service is decoupled from the worker service using a Google's PubSub
 queue\cite{pubsub}. We use a push queue that instigates the jobs by submitting
 POST requests to the worker service. It can protect the workers from large
 surges in demand using flow control dynamic rate limiting. Also, it improves
-robustness since it guarantees at-least-once messaging by re-scheduling failed
-jobs.
+robustness since it guarantees \emph{at-least-once} messaging by re-scheduling
+failed jobs.
 
 We could have also used Google's MemCache\cite{mem} offering which provides a
 much faster and local but smaller storage option to the web servers. Inside the
@@ -281,8 +281,8 @@ This paper is bundled with an example zip file you can submit to the app. You
 should use G++ with the C++ 11 standard. In addition you are required to provide
 the following linker flag: \texttt{-pthread}. It is recommended to also use
 \texttt{-O3 -pedantic -Wall} as the compiler flags. The executable returned can
-be ran, if desired, on a Linux terminal with \texttt{./a.out hello\_world.stdc},
-a sample program included with the paper.
+be ran, if desired, on a Linux terminal with \texttt{./exename
+hello\_world.stdc}, a sample program included with the source code.
 
 \begin{thebibliography}{00}
 
@@ -320,7 +320,7 @@ a sample program included with the paper.
     \url{https://cloud.google.com/appengine/articles/scaling/memcache/}
 
 \bibitem{MSVC}
- 	Multi-process compilation using -MP MSVC
+ 	Multi-process compilation using \texttt{-MP} MSVC
  	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}
 
 \end{thebibliography}

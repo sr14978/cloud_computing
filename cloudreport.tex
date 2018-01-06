@@ -296,14 +296,14 @@ The level of parallelism that this application can achieve is likely to outweigh
 the performance observed with the naive multi-threaded approach for large
 projects - the performance will obviously not outperform a serial approach for
 small projects, with overhead for communication.
-The application is available online at
+The application is bundled with an example zip file \cite{Chimera} you can
+submit to the app. You should use G++ with the C++ 11 standard. In addition you
+are required to provide the following linker flag: \texttt{-pthread}. It is
+recommended to also use \texttt{-O3 -pedantic -Wall} as the compiler flags. The
+executable returned can be ran, if desired, on a Linux terminal with
+\texttt{./a.out hello\_world.stdc}, a sample program included also with the
+source code \cite{hellocloud}. The application is available online at
 \textbf{\url{https://cloudcomputingcompiler.appspot.com}}.
-The application is bundled with an example zip file (hosted at \textbf{\url{https://cloudcomputingcompiler.appspot.com/static/ChimeraVirtualMachine.zip}}) you can submit to the app.
-You should use G++ with the C++ 11 standard. In addition you are required to provide
-the following linker flag: \texttt{-pthread}. It is recommended to also use
-\texttt{-O3 -pedantic -Wall} as the compiler flags. The executable returned can
-be ran, if desired, on a Linux terminal with \texttt{./a.out
-hello\_world.stdc} (found @ \textbf{\url{https://cloudcomputingcompiler.appspot.com/static/hello_world.stdc}}), a sample program included with the source code.
 
 \begin{thebibliography}{00}
 
@@ -347,6 +347,14 @@ hello\_world.stdc} (found @ \textbf{\url{https://cloudcomputingcompiler.appspot.
 \bibitem{MSVC}
  	Multi-process compilation using \texttt{-MP} MSVC
  	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}
-
+ 	
+\bibitem{Chimera}
+	Zip file for source of virtual machine
+	\url{https://cloudcomputingcompiler.appspot.com/static/ChimeraVirtualMachine.zip}
+	
+\bibitem{hellocloud}
+    Example program that can be ran on the virtual machine you compile
+    \url{https://cloudcomputingcompiler.appspot.com/static/hello_world.stdc}
+    
 \end{thebibliography}
 \end{document}

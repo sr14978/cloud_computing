@@ -55,8 +55,6 @@ projects, that might otherwise take over half an hour to compile. This technique
 also allows us to leverage multi-threaded compilers whilst also compiling files
 in parallel if the hardware allows it.
 
-% potentially add in more information?
-
 \section{Implementation}
 \subsection{Overall Procedure}
 \begin{figure}[ht] % ht
@@ -69,11 +67,9 @@ in parallel if the hardware allows it.
 Figure \ref{fig:overview} illustrates the general workflow, which is now
 discussed in more detail. A user visits the website provided by the front end
 service. They send a zip file along with the corresponding compiler and linker
-flags to the API using the webapp.
-
-Then, in the cloud, the zip file is tagged and uploaded to object storage, a
-task is submitted to the queue to initiate the compilation and the tag is
-returned to the user app for retrieval of the results.
+flags to the API using the webapp. Then, in the cloud, the zip file is tagged
+and uploaded to object storage, a task is submitted to the queue to initiate
+the compilation and the tag is returned to the user app for retrieval of the results.
 
 Upon completion of the compilation, both the results file and executable are
 uploaded to object storage and they become available for the app to

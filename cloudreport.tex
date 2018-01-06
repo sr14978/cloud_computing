@@ -30,7 +30,7 @@ We present an application based in the cloud allowing users to compile large C
 or C++ projects in parallel, utilising Google App Engine. The application can
 compile projects by allowing a user to upload a flattened zip with the source
 code and headers. It is available online at
-\url{https://cloudcomputingcompliler.appspot.com}.
+\url{https://cloudcomputingcompliler.appspot.com} [sic].
 \end{abstract}
 \section{Introduction}
 In industry, very large C or C++ projects are common. These can take a very long time to compile, and this is a
@@ -66,8 +66,10 @@ A user visits the website provided by the front end service. They send a zip fil
 
 Then, in the cloud, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
 
+%fragment
 Upon completion of the compilation, the results file and executable is uploaded
-to object storage and becomes available for the app to download.
+to object storage and becomes available for the app to download along with the
+warnings presented in browser.
 
 The compilation process consists of three steps:
 Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over each of
@@ -167,14 +169,29 @@ and G++ compilers. Ideally, we would also like to support the MSVC compiler and
 Clang. The former is an example of a compiler that indeed runs multi-threaded,
 which would therefore not benefit from simple multi-threaded command line compilation
 and is well suited to cloud compilation.
+\subsection{Vertical Scaling}
+Further to the previous discussion on what vertical scaling is, it is worth
+discussing how we \emph{could} have implemented it and why it is likely not
+advantageous with respect to further enhancements we could make. Vertical
+scaling can be realised by making use of more resources on each of our worker
+threads. This is trivially achievable with our application by shipping $n$
+source files to each worker where $n$ is the number of cores on the machine.
+Then we would spawn off $n$ instances of the compiler. This was the approach
+discussed in the introduction. However, this is not a suitable idea for two
+reasons: it falls short with multi-threaded compilers as
+discussed in the introduction, which conflicts with adding new compilers; it
+relies on the servers provided to us being multi-core, which is less likely to
+be available to us in a commodity-heavy server infrastructure.
 \section{Conclusion}
 In this paper we have presented a means to compile large projects whilst
 leveraging the scalable power of a cloud platform using micro-services. We have
-made a working prototype that is both horizontally and vertically scaling to
+made a working prototype that horizontally scales to
 meet both user demand and reach performance goals for per user job submitions.
 The level of parallelism that this application can achieve is likely to outweigh
-the performance observed with the naive multi-threaded approach. The application
-is available online at
+the performance observed with the naive multi-threaded approach for large
+projects - the performance will obviously not outperform a serial approach for
+small projects, with overhead for communication.
+The application is available online at
 \textbf{\url{https://cloudcomputingcompliler.appspot.com}} [sic].
 This paper is bundled with an example zip file you can submit to the app.
 

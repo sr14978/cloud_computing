@@ -106,7 +106,8 @@ def unzip_step(message):
       'job_result_blobname': message['attributes']['job_result_blobname'],
       'executable_blobname': message['attributes']['executable_blobname'],
       'user_id': message['attributes']['user_id'],
-      'rand': message['attributes']['rand']
+      'rand': message['attributes']['rand'],
+      'zip_name': message['attributes']['zip_name']
     }, 'data': json.dumps(files_attributes)}]})
     print("Submitting link job: " + data)
     publish(data=data)
@@ -226,7 +227,7 @@ def link_step(message):
           {
             'url': message['attributes']['rand'],
             'success': ret['success'],
-            'name': flags['exename']
+            'name': message['attributes']['zip_name']
           }
         )
     else:

@@ -58,7 +58,8 @@ def submit():
           'job_result_blobname': rand + "-job_result",
           'executable_blobname': rand + "-executable",
           'rand': rand,
-          'user_id': user_id
+          'user_id': user_id,
+          'zip_name': f.filename
         },
         'data': safe_filename
       }]

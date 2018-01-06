@@ -70,8 +70,7 @@ def submit():
       'compiler-flags': compiler_flags,
       'linker-flags': linker_flags
     }
-    user_id = request.form['user_id']
-    print(user_id)
+
     print(zip.filename)
     print(json.dumps(flags))
     return "23452345234", 200

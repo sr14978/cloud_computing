@@ -43,8 +43,8 @@ orthogonal to every other file (until link-time). This results in an ability to
 compile multiple files at once by using scripts that launch many compiler
 instances in separate threads. This is a good improvement on the compilation
 process, but it is limited by the number of processor cores you have.
-Additionally, if your compiler \emph{is} multi-threaded, this will place a large
-amount of strain on the system.
+Additionally, if your compiler \emph{is} multi-threaded \cite{rust}, this will
+place a large amount of strain on the system.
 
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how
@@ -170,9 +170,10 @@ on the parallel aspect.
 \subsection{New Compilers}
 The current implementation of this application only allows us to make use of GCC
 and G++ compilers. Ideally, we would also like to support the MSVC compiler and
-Clang. The former is an example of a compiler that indeed runs multi-threaded,
-which would therefore not benefit from simple multi-threaded command line compilation
-and is well suited to cloud compilation.
+Clang. The former is an example of a compiler that already performs
+multi-threaded compilation by instantiating itself multiple times \cite{MSCV},
+so wouldn't benefit from running it multiple times in parallel as suggested in the
+introduction.
 \subsection{Vertical Scaling}
 Further to the previous discussion on what vertical scaling is, it is worth
 discussing how we \emph{could} have implemented it and why it is likely not
@@ -207,6 +208,11 @@ This paper is bundled with an example zip file you can submit to the app.
 \bibitem{GCC}
     GNU C Compiler
     \url{https://gcc.gnu.org/}
+    
+\bibitem{rust}
+    Rust Compiler - Parallel Code Generation
+    \url{https://internals.rust-lang.org/t/default-settings-for-parallel-codegen/519}
+
 
 \bibitem{GAE}
     Google App Engine: A PaaS offering auto scaling instances
@@ -215,6 +221,10 @@ This paper is bundled with an example zip file you can submit to the app.
 \bibitem{Flask}
     Flask: a web microframework for Python
     \url{http://flask.pocoo.org/}
+    
+\bibitem{MSVC}
+ 	Multi-process compilation using -MP MSVC
+ 	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}    
 \end{thebibliography}
 
 \end{document}

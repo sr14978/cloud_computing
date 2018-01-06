@@ -27,18 +27,19 @@ sr14978@bristol.ac.uk}
 
 \begin{abstract}
 We present an application based in the cloud allowing users to compile large C
-or C++ projects in parallel, utilising Google App Engine. The application can
-compile projects by allowing a user to upload a flattened zip with the source
-code and headers. It is available online at
+or C++ projects in parallel, utilising Google App Engine (GAE). The application
+can compile projects by allowing a user to upload a flattened zip with the
+source code and headers. It is available online at
 
 \noindent\url{https://cloudcomputingcompliler.appspot.com} [sic].
 
 \end{abstract}
 \section{Introduction}
-In industry, very large C or C++ projects are common. These can take a very long time to compile using GCC \cite{GCC}, and this is a
-large waste of time for developers. Many compilers are not multi-threaded,
-since the process of compilation and optimisation must be done in an ordering with
-many dependencies. Despite this, however, each file in itself is completely
+In industry, very large C or C++ projects are common. These can take a very
+long time to compile using GCC, and this is a
+large waste of time for developers. Many compilers are not multi-threaded - the
+process of compilation and optimisation must be done in an ordering
+with many dependencies. Despite this, however, each file in itself is completely
 orthogonal to every other file (until link-time). This results in an ability to
 compile multiple files at once by using scripts that launch many compiler
 instances in separate threads. This is a good improvement on the compilation
@@ -50,9 +51,9 @@ the type of parallelism it employs.
 Our solution is to leverage multiple processors, distributed across the cloud,
 each of which can handle the compilation of one or many files depending on how
 big the files are. This can prove to be a large advantage for much larger
-projects, that might otherwise take over half an hour to compile! This technique
+projects, that might otherwise take over half an hour to compile. This technique
 also allows us to leverage multi-threaded compilers whilst also compiling files
-in parallel.
+in parallel if the hardware allows it.
 
 % potentially add in more information?
 
@@ -60,33 +61,44 @@ in parallel.
 \subsection{Overall Procedure}
 \begin{figure}[ht] % ht
     \centering
-    \includegraphics[width=3.2in]{WorkArchitecture.png}
+    \includegraphics[width=2.4in]{WorkArchitecture.png}
     \caption{Workflow chart}
     \label{fig:overview}
 \end{figure}
 
-A user visits the website provided by the front end service. They send a zip file along with the corresponding compiler and linker flags to the API using the webapp.
+Figure \ref{fig:overview} illustrates the general workflow, which is now
+discussed in more detail. A user visits the website provided by the front end
+service. They send a zip file along with the corresponding compiler and linker
+flags to the API using the webapp.
 
-Then, in the cloud, the zip file is tagged and uploaded to object storage, a task is submitted to the queue to initiate the compilation and the tag is returned to the user app for retrieval of the results.
+Then, in the cloud, the zip file is tagged and uploaded to object storage, a
+task is submitted to the queue to initiate the compilation and the tag is
+returned to the user app for retrieval of the results.
 
-%fragment
-Upon completion of the compilation, the results file and executable is uploaded
-to object storage and becomes available for the app to download along with the
-warnings presented in browser.
+Upon completion of the compilation, both the results file and executable are
+uploaded to object storage and they become available for the app to
+download with the warnings presented in browser. If compilation failed, errors
+are presented to the user instead.
 
 The compilation process consists of three steps:
-Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over each of
-the source files to include all necessary headers. This allows us to discard the
-header files, removing the need to transfer them \emph{all} to workers for
-\emph{every} source file, at the cost of source file size. These source files
-are then uploaded to object storage individually and the zip file is deleted as it is no longer needed. A task for compilation of each file is then submitted to the queue along with a task to link the resulting object files together.
+Firstly, the zip file is unpacked and the GCC macro pre-processor is ran over
+each of the source files to include all necessary headers. This allows us to
+discard the header files, removing the need to transfer them \emph{all} to
+workers for \emph{every} source file, at the cost of source file size. These
+source files are then uploaded to object storage individually and the zip file
+is deleted as it is no longer needed. A task for compilation of each file is
+then submitted to the queue along with a task to link the resulting object
+files together.
 
-Secondly, for each compilation task of a source file, the file is downloaded from object storage and compiled locally. The object file, along with any warnings and errors is then collected and stored back to object storage.
+Secondly, for each compilation task of a source file, the file is downloaded
+from object storage and compiled locally. The object file, along with any
+warnings and errors is then collected and stored back to object storage.
 
 Thirdly, the linker checks that all files have been compiled then, if they were
 all successful, downloads them in to a local folder before linking them together
 in to an executable. If the objects file are not all ready it reschedules
-itself and returns. Finally, it uploads the executable or coagulated error messages to be available to the user.
+itself and returns. Finally, it uploads the executable or coagulated error
+messages to be available to the user.
 
 \subsection{Underlying Architecture}
 \begin{figure}[ht] % ht
@@ -96,8 +108,7 @@ itself and returns. Finally, it uploads the executable or coagulated error messa
     \label{fig:underlying}
 \end{figure}
 
-Our solution consists of a collection of independent micro services, each
-managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances \cite{GAE}. In the flex mode of GAE, server instances run inside containers which are created from the uploaded source code. This creation means that the initial setting up of a system can take much longer as an docker image has to be build but provides a clean way to manage the running instances and later creation of clone instances is just as fast. In the App Engine you cannot use the instances file-system to store data since they are volatile to change.
+Our solution consists of a collection of independent micro services, each managed separately by Google App engine. We used this platform-as-a-service (PaaS) offering to take advantage of Google Flex environment which automatically scales and load balances \cite{GAE}. In the flex mode of GAE, server instances run inside containers which are created from the uploaded source code. This creation means that the initial setting up of a system can take much longer as an docker image has to be build but provides a clean way to manage the running instances and later creation of clone instances is just as fast. In the App Engine you cannot use the instances file-system to store data since they are volatile to change.
 
 Each micro-service is written in Python using the Flask web framework \cite{Flask}:
 
@@ -109,23 +120,65 @@ pages including static and dynamic content.
 access to all the functions through a RESTful interface.
 
 \item The third micro-service conducts a \emph{map-then-reduce} process to
-compile the given source code and store it to object storage. 
+compile the given source code and store it to object storage.
 \end{itemize}
 
 We could have created three
-sub services to operate the three actions needed but we opted to use one micro-service since this means the workers are more flexible to complete any of the actions and so fewer instances will be needed for light loads.
+sub services to operate the three actions needed but we opted to use one
+micro-service since this means the workers are more flexible to complete any of
+the actions and so fewer instances will be needed for light loads.
 
-To create a micro-service, a \texttt{yaml} file must be submitted defining the how GAE should respond to requests and giving details of the runtime of your app instance. It also states the command to start up the server, for which we used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up the web interface. Our folder structure also included a template directory for serving up dynamic pages and a static directory for the static content like style sheets. We also uploaded a \texttt{requirements.txt} file to tell the container build script to pull in the appropriate libraries.
+To create a micro-service, a \texttt{yaml} file must be submitted defining the
+how GAE should respond to requests and giving details of the runtime of your
+app instance. It also states the command to start up the server, for which we
+used Gunicorn\cite{gunicorn} as our Web Server Gateway Interface to serve up
+the web interface. Our folder structure also included a template directory for
+serving up dynamic pages and a static directory for the static content like
+style sheets. We also uploaded a \texttt{requirements.txt} file to tell the
+container build script to pull in the appropriate libraries.
 
-The static content to be served to the user is cached in a geographically distributed fashion on Google's Content Management System. This did cause some issues in testing since when uploading a new version, the old code was still present in the cache so the content did not update. However, in production this improves the latency of resource retrieval greatly.
+The static content to be served to the user is cached in a geographically
+distributed fashion on Google's Content Management System. This did cause some
+issues in testing since when uploading a new version, the old code was still
+present in the cache so the content did not update. However, in production this
+improves the latency of resource retrieval greatly.
 
-To store information about users we have used Google's cloud Datastore\cite{datastore} offering. All micro-services communicate with the Datastore through the Google's client API. Datastore is a non-relational database so structured queries such as table joins are not available. However, it is great for storing simple variable types as this means is able to be massively scalable and deliver high performance since it uses a distributed architecture, and scales automatically. Distributed database's have need to consider consistency and Datastore uses strong consistency when querying keys but eventual consistency for other content based queries. This is fine for our application's needs since it is not critical data. It also guarantees atomic transactions encrypts are data written to disk.
+To store information about users we have used Google's cloud
+Datastore\cite{datastore} offering. All micro-services communicate with the
+Datastore through the Google's client API. Datastore is a non-relational
+database so structured queries such as table joins are not available. However,
+it is great for storing simple variable types as this means is able to be
+massively scalable and deliver high performance since it uses a distributed
+architecture, and scales automatically. Distributed database's have need to
+consider consistency and Datastore uses strong consistency when querying keys
+but eventual consistency for other content based queries. This is fine for our
+application's needs since it is not critical data. It also guarantees atomic
+transactions encrypts are data written to disk.
 
-All files are stored in Google's Cloud Object storage offering\cite{storage} that provides a unified place for data across the micro-services. Object storage differs from other storage architectures like hierarchical file-systems in that it consists of an unstructured collection of variable sized object blobs each retrievable by a globally unique identifier (in Google Cloud storage you can create folders, but they are just abstractions on top of globally unique names). We created our own object storage bucket to store our zip files, source code, object code and compiler messages. 
+All files are stored in Google's Cloud Object storage offering\cite{storage}
+that provides a unified place for data across the micro-services. Object
+storage differs from other storage architectures like hierarchical file-systems
+in that it consists of an unstructured collection of variable sized object
+blobs each retrievable by a globally unique identifier (in Google Cloud storage
+you can create folders, but they are just abstractions on top of globally
+unique names). We created our own object storage bucket to store our zip files,
+source code, object code and compiler messages.
 
-The API service is decoupled from the worker service using a Google's PubSub queue\cite{pubsub}. We use a push queue that instigates the jobs by submitting POST requests to the worker service. It can protect the workers from large surges in demand using flow control dynamic rate limiting. Also, it improves robustness since it guarantees at-least-once messaging by re-scheduling failed jobs.
+The API service is decoupled from the worker service using a Google's PubSub
+queue\cite{pubsub}. We use a push queue that instigates the jobs by submitting
+POST requests to the worker service. It can protect the workers from large
+surges in demand using flow control dynamic rate limiting. Also, it improves
+robustness since it guarantees at-least-once messaging by re-scheduling failed
+jobs.
 
-We could have also used Google's MemCache\cite{mem} offering which provides a much faster and local but smaller storage option to the web servers. Inside the memory cache, data is held in RAM and so when used to store frequently accessed data it can improve performance and therefore cost. However, care must be taken to decide what to put in to the cache and on the free tier there are no guarantees about the data still being there when you next need it since it may be cleared at any time to make space for someone else's use. This means it is only really appropriate for static content.
+We could have also used Google's MemCache\cite{mem} offering which provides a
+much faster and local but smaller storage option to the web servers. Inside the
+memory cache, data is held in RAM and so when used to store frequently accessed
+data it can improve performance and therefore cost. However, care must be taken
+to decide what to put in to the cache and on the free tier there are no
+guarantees about the data still being there when you next need it since it may
+be cleared at any time to make space for someone else's use. This means it is
+only really appropriate for static content.
 
 We included user accounts on the application so users can check up on compilations they have done previously and download the resulting executables. For this we integrated with Google's identity API using OAuth2. To do this, we used a flask plugin called UserOAuth2\cite{oauth} to redirect to Google's authentication page and handle the response token by looking up the user details on Google Plus such as name and user id number. 
 
@@ -133,14 +186,28 @@ After a user has logged on, we want to store their credentials so that we can cu
 
 \section{Scalability}
 
-Vertical scaling is increasing the size of you compute devices to get better performance. This normally means the software architecture does not need to be changed, however, there are limits to the size of servers and also, using many smaller commodity servers is cheaper due to efficiencies of scale. Therefore, the current trend is to use the horizontal scaling of using more machines to satisfy high demand.
+Vertical scaling is increasing the size of you compute devices to get better
+performance. This normally means the software architecture does not need to be
+changed, however, there are limits to the size of servers and also, using many
+smaller commodity servers is cheaper due to efficiencies of scale. Therefore,
+the current trend is to use the horizontal scaling of using more machines to
+satisfy high demand.
 
 There are three axis of the horizontal scaling cube, and Google App Engine
 implements them all.
 
-The first way of scaling out is functional decomposition, which we have done by splitting our system in to three micro-services. This creates good software maintainability since each part of the process is decoupled from the next and so has clear, well-defined interaction points.
+The first way of scaling out is functional decomposition, which we have done by
+splitting our system in to three micro-services. This creates good software
+maintainability since each part of the process is decoupled from the next and
+so has clear, well-defined interaction points.
 
-The second is data-partitioning, which can be geographical or purely over separate user demographics. Since, within our application users do not share data and usually with remain in one location for sustained periods assigning resources in close proximity to them will increase performance because for instance caches become more efficient. GAE, will create multiple server instances from our template in different data centres and can route traffic to the most applicable one. 
+The second is data-partitioning, which can be geographical or purely over
+separate user demographics. Since, within our application users do not share
+data and usually with remain in one location for sustained periods assigning
+resources in close proximity to them will increase performance because for
+instance caches become more efficient. GAE, will create multiple server
+instances from our template in different data centres and can route traffic to
+the most applicable one.
 
 Finally, within a specific feature and geographic server group there can be
 instance replication to serve the load. This replicated instance group can also
@@ -152,9 +219,14 @@ good for long running jobs but aren't as reactive to change in load. Basic
 scaling, only creates a new instance when the application receives a request and
 turns it down again after it has finished. This is targeted towards very
 intermittent, small-scale use because it uses minimal resources but has the
-overhead of starting up new instances for new requests. Automatic scaling uses application metrics such as request latencies to gauge scaling demands. We use GAE automatic scaling between one and sixteen instances based on the CPU utilisation to provide a capable but responsive system.
+overhead of starting up new instances for new requests. Automatic scaling uses
+application metrics such as request latencies to gauge scaling demands. We use
+GAE automatic scaling between one and sixteen instances based on the CPU
+utilisation to provide a capable but responsive system.
 
-You can also host multiple versions of software and do incremental feature rollouts by using traffic splitting to gradually upgrade the service with minimal disruption.
+You can also host multiple versions of software and do incremental feature
+rollouts by using traffic splitting to gradually upgrade the service with
+minimal disruption.
 
 \section{Future Work and Limitations}
 \subsection{Linux Only Compilation}
@@ -181,8 +253,8 @@ The current implementation of this application only allows us to make use of GCC
 and G++ compilers. Ideally, we would also like to support the MSVC compiler and
 Clang. The former is an example of a compiler that already performs
 multi-threaded compilation by instantiating itself multiple times \cite{MSVC},
-so wouldn't benefit from running it multiple times in parallel as suggested in the
-introduction.
+so wouldn't benefit from running it multiple times in parallel as suggested in
+the introduction.
 \subsection{Vertical Scaling}
 Further to the previous discussion on what vertical scaling is, it is worth
 discussing how we \emph{could} have implemented it and why it is likely not
@@ -210,14 +282,12 @@ The application is available online at
 This paper is bundled with an example zip file you can submit to the app. You
 should use G++ with the C++ 11 standard. In addition you are required to provide
 the following linker flag: \texttt{-pthread}. It is recommended to also use
-\texttt{-O3 -pedantic -Wall} as the compiler flags.
+\texttt{-O3 -pedantic -Wall} as the compiler flags. The executable returned can
+be ran, if desired, on a Linux terminal with \texttt{./a.out hello\_world.stdc},
+a sample program included with the paper.
 
 \begin{thebibliography}{00}
 
-\bibitem{GCC}
-    GNU C Compiler
-    \url{https://gcc.gnu.org/}
-    
 \bibitem{rust}
     Rust Compiler - Parallel Code Generation
     \url{https://internals.rust-lang.org/t/default-settings-for-parallel-codegen/519}
@@ -229,7 +299,7 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
 
 \bibitem{Flask}
     Flask: a web microframework for Python
-    \url{http://flask.pocoo.org/} 
+    \url{http://flask.pocoo.org/}
 
 \bibitem{gunicorn}
     Gunicorn: a Python WSGI HTTP Server for UNIX
@@ -246,7 +316,7 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
 \bibitem{pubsub}
    PubSub: Google Task Queue
     \url{https://cloud.google.com/pubsub/}
-    
+
 \bibitem{mem}
    Effective MemCache
     \url{https://cloud.google.com/appengine/articles/scaling/memcache/} 
@@ -254,7 +324,7 @@ the following linker flag: \texttt{-pthread}. It is recommended to also use
 \bibitem{oauth}
    OAth2 Flask extension
     \url{http://oauth2client.readthedocs.io/en/latest/source/oauth2client.contrib.flask_util.html}
-     
+
 \bibitem{MSVC}
  	Multi-process compilation using -MP MSVC
  	\url{https://msdn.microsoft.com/en-us/library/bb385193.aspx}

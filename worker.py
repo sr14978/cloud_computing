@@ -87,6 +87,7 @@ def unzip_step(message):
                         'attributes': {
                           'type': 'compile',
                           'flags': message['attributes']['flags'],
+                          'job_result_blobname': message['attributes']['job_result_blobname'],
                           'file_attributes': file_attributes
                         },
                         'data': safe_source_file_name
@@ -131,7 +132,7 @@ def compile_step(message):
     os.makedirs(working_folder)
     source_file_path = working_folder + source_blob_name
     
-    if storage.file_exists(message['attributes']['file_attributes']['msg_blobname']):
+    if storage.file_exists(message['attributes']['file_attributes']['msg_blobname']) or storage.file_exists(message['attributes']['job_result_blobname']):
         shutil.rmtree(working_folder)
         return "Ok", 200
     
@@ -163,6 +164,10 @@ def link_step(message):
     messages.append(message['data'])
     attrs_files = json.loads(message['data'])
     flags = json.loads(message['attributes']['flags'])
+    
+    if storage.file_exists(message['attributes']['executable_blobname']):
+        print("file already exists: ", message['attributes']['executable_blobname'])
+        return 'Ok', 200
     
     for attrs_file in attrs_files:
         if not storage.file_exists(attrs_file['msg_blobname']):

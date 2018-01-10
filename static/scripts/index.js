@@ -95,6 +95,13 @@ function onLoad(e) {
     }
 
     var file = file_input.files[0]
+    console.log(file);
+    if( ! (file.type == "application/x-zip-compressed" ||  file.type == "application/zip"
+          || (file.type == "" && file.name.substring(file.name.lastIndexOf('.')) == "zip")) ) {
+      alert("please upload zip file")
+      document.getElementById("submit_button").disabled = false;
+      return;
+    }  
     var formData = new FormData();
     formData.append('source.zip', file);
     //get the flags

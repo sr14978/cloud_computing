@@ -165,8 +165,8 @@ def link_step(message):
     attrs_files = json.loads(message['data'])
     flags = json.loads(message['attributes']['flags'])
     
-    if storage.file_exists(message['attributes']['executable_blobname']):
-        print("file already exists: ", message['attributes']['executable_blobname'])
+    if storage.file_exists(message['attributes']['job_result_blobname']):
+        print("file already exists: ", message['attributes']['job_result_blobname'])
         return 'Ok', 200
     
     for attrs_file in attrs_files:

@@ -29,7 +29,7 @@ sr14978@bristol.ac.uk}
 We present an application based in the cloud allowing users to compile large C
 or C++ projects in parallel, utilising Google App Engine (GAE). The application
 can compile projects by allowing a user to upload a flattened zip with the
-source code and headers. It is available online at
+source code and headers. The application can be run online at
 
 \noindent\url{https://cloudcomputingcompiler.appspot.com}.
 
@@ -298,9 +298,8 @@ submit to the app. You should use G++ with the C++ 11 standard. In addition you
 are required to provide the following linker flag: \texttt{-pthread}. It is
 recommended to also use \texttt{-O3 -pedantic -Wall} as the compiler flags. The
 executable returned can be ran, if desired, on a Linux terminal with
-\texttt{./a.out hello\_world.stdc}, a sample program included also with the
-source code \cite{hellocloud}. The application is available online at
-\textbf{\url{https://cloudcomputingcompiler.appspot.com}}.
+\texttt{./a.out helloworld.stdc}, a sample program also included in the app
+\cite{hellocloud}.
 
 \begin{thebibliography}{00}
 
@@ -351,7 +350,7 @@ source code \cite{hellocloud}. The application is available online at
 	
 \bibitem{hellocloud}
     Example program that can be ran on the virtual machine you compile
-    \url{https://cloudcomputingcompiler.appspot.com/static/hello_world.stdc}
+    \url{https://cloudcomputingcompiler.appspot.com/static/helloworld.stdc}
     
 \end{thebibliography}
 \end{document}
